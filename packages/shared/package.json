@@ -1,0 +1,10 @@
+{
+  "name": "@workspace/shared",
+  "version": "0.0.1",
+  "description": "Shared types and configuration",
+  "private": true,
+  "main": "index.ts",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

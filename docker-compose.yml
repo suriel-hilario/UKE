@@ -1,0 +1,57 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - api
+    networks:
+      - uke-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://uke_user:uke_password@postgres:5432/uke_dev
+    command: sh -c "pnpm --filter @workspace/api dev"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - uke-network
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: uke_user
+      POSTGRES_PASSWORD: uke_password
+      POSTGRES_DB: uke_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uke_user -d uke_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - uke-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  uke-network:
+    driver: bridge

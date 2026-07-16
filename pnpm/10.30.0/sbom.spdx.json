@@ -1,0 +1,87 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "name": "SBOM-SPDX-pnpm-10.30.0",
+  "creationInfo": {
+    "created": "2026-02-19T10:23:05Z",
+    "creators": [
+      "Tool: https://github.com/Homebrew/brew@5.0.14"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://formulae.brew.sh/spdx/pnpm-10.30.0.json",
+  "documentDescribes": [
+    "SPDXRef-Archive-pnpm-src",
+    "SPDXRef-Compiler",
+    "SPDXRef-Bottle-pnpm"
+  ],
+  "files": [],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Archive-pnpm-src",
+      "name": "pnpm",
+      "versionInfo": "10.30.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "1985-10-26 08:15:00 UTC",
+      "licenseConcluded": "MIT",
+      "downloadLocation": "https://registry.npmjs.org/pnpm/-/pnpm-10.30.0.tgz",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fde3cebbd4ed0d6d140b1983743bf575cdd4b15e4d5e5b257425152dce5b1b6a"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Compiler",
+      "name": "clang",
+      "versionInfo": "26.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "checksums": [],
+      "externalRefs": []
+    },
+    {
+      "SPDXID": "SPDXRef-Bottle-pnpm",
+      "name": "pnpm",
+      "versionInfo": "10.30.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "1985-10-26 08:15:00 UTC",
+      "licenseConcluded": "MIT",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/pnpm/blobs/sha256:0bd8d732f2f334d46895fe81c15ec31483bd87ef184470ca0f9eb9f01d99c6ca",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/homebrew/core/pnpm@10.30.0",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0bd8d732f2f334d46895fe81c15ec31483bd87ef184470ca0f9eb9f01d99c6ca"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-File-pnpm",
+      "relationshipType": "PACKAGE_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-pnpm-src"
+    },
+    {
+      "spdxElementId": "SPDXRef-Compiler",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-Package-pnpm-src"
+    }
+  ]
+}
