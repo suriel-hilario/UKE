@@ -1,8 +1,10 @@
-## Purpose
+## ADDED
+
+### Purpose
 
 Automate code quality gates on every push and pull request. The CI pipeline runs linting, testing, and builds to catch issues before merge, while building and tagging Docker images as deployment artifacts.
 
-## Requirements
+### Requirements
 
 ### Requirement: GitHub Actions workflow file is configured for CI
 
