@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Provide a reproducible local development environment where developers can start the full stack (web app, API, database) with a single command. Docker Compose orchestrates three services to mirror production topology while enabling fast iteration with live reload and hot module replacement.
+
+## Requirements
 
 ### Requirement: Docker Compose file defines local development stack
 

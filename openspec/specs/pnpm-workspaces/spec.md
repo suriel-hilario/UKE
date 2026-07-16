@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Establish a pnpm monorepo structure with clear workspace boundaries for the frontend (React), backend (NestJS), and shared code. This enables consistent dependency management, unified build tooling, and independent app deployments while maintaining a single source of truth for versioning.
+
+## Requirements
 
 ### Requirement: Monorepo initialized with pnpm workspaces
 
