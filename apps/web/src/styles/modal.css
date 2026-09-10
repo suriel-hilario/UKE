@@ -1,0 +1,38 @@
+dialog {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-md);
+  max-width: min(480px, calc(100vw - var(--space-8)));
+  max-height: min(80vh, calc(100vh - var(--space-8)));
+  overflow-y: auto;
+  z-index: var(--z-modal);
+}
+
+dialog::backdrop {
+  background: var(--color-overlay-backdrop);
+}
+
+dialog[open]:not(:modal) {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+}
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+dialog label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+}
+
+dialog button[type='submit'],
+dialog button:not([type]) {
+  align-self: flex-end;
+}

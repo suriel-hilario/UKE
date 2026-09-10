@@ -1,0 +1,122 @@
+:root {
+  /* Brand */
+  --color-brand: #1a5228;
+  --color-brand-dark: #0c2613;
+  --color-brand-contrast: #ffffff;
+
+  /* Semantic */
+  --color-success: #1e8449;
+  --color-success-bg: #d4edda;
+  --color-warning: #b9770e;
+  --color-warning-bg: #fdf3d9;
+  --color-danger: #c0392b;
+  --color-danger-bg: #fbdedb;
+  --color-neutral: #7a8a80;
+  --color-neutral-bg: #eef1ef;
+  --color-info: #1a5276;
+  --color-info-bg: #e3f2fd;
+
+  /* Team colors */
+  --color-team-verde: #2ecc71;
+  --color-team-rojo: #e74c3c;
+  --color-team-azul: #3498db;
+
+  /* Semaforo */
+  --color-semaforo-verde: #27ae60;
+  --color-semaforo-rojo: #e74c3c;
+  --color-semaforo-sin-datos: #b0b8b3;
+
+  /* Minutaje participation pills (8 distinct hues) */
+  --color-pill-conv: #1a5276;
+  --color-pill-jug: #1e8449;
+  --color-pill-tit: #6c3483;
+  --color-pill-les: #c0392b;
+  --color-pill-san: #ca6f1e;
+  --color-pill-enf: #148f77;
+  --color-pill-vac: #b7950b;
+  --color-pill-nj: #616a6b;
+
+  /* F11 10-state palette (distinct hues, independent of semantic triad) */
+  --color-estado-f11-1: #1a7a35;
+  --color-estado-f11-em: #0d5a50;
+  --color-estado-f11-rc: #1a3a6a;
+  --color-estado-f11-va: #4c1d95;
+  --color-estado-f11-ls: #92400e;
+  --color-estado-f11-en: #7c2d12;
+  --color-estado-f11-tr: #0d3a58;
+  --color-estado-f11-ex: #7f1d1d;
+  --color-estado-f11-ot: #374151;
+  --color-estado-f11-nj: #6b7280;
+
+  /* Surface */
+  --color-bg: #f7f8f7;
+  --color-surface-card: #ffffff;
+  --color-surface-sidebar: #ffffff;
+  --color-surface-topbar: var(--color-brand-dark);
+
+  /* Text */
+  --color-text-primary: #1a2a1a;
+  --color-text-secondary: #5b6b60;
+  --color-text-disabled: #9aa39c;
+
+  /* Border / focus / overlay */
+  --color-border: #dde3df;
+  --color-focus-ring: #3498db;
+  --color-overlay-backdrop: rgba(10, 20, 12, 0.55);
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(10, 20, 12, 0.08);
+  --shadow-md: 0 4px 12px rgba(10, 20, 12, 0.12);
+
+  /* Z-index */
+  --z-base: 0;
+  --z-overlay: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* Interaction */
+  --transition-fast: 150ms ease;
+  --touch-target-min: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+}

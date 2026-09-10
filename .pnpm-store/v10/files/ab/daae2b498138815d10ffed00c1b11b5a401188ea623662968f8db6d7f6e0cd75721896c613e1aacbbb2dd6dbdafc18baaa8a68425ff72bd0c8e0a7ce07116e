@@ -1,0 +1,12 @@
+import type { BaseClientOptions } from "../../../../../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../../../../../BaseClient.mjs";
+import { GroupsClient } from "../resources/groups/client/Client.mjs";
+export declare namespace SourcesClient {
+    type Options = BaseClientOptions;
+}
+export declare class SourcesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<SourcesClient.Options>;
+    protected _groups: GroupsClient | undefined;
+    constructor(options: SourcesClient.Options);
+    get groups(): GroupsClient;
+}

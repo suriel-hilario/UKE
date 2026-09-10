@@ -1,0 +1,48 @@
+## 1. Terraform: provider, resources, variables, outputs
+
+- [x] 1.1 Create `infra/terraform/main.tf`: `digitalocean` provider, `digitalocean_ssh_key`, `digitalocean_droplet` (image `ubuntu-24-04-x64`, size `s-2vcpu-2gb-amd`, region `ams3`, `user_data = file("${path.module}/cloud-init.yaml")`, `ssh_keys = [digitalocean_ssh_key.this.id]`), `digitalocean_firewall` (inbound 22/80/443 from `0.0.0.0/0` + `::/0`, all outbound) (spec: "Droplet, firewall, and SSH key managed by Terraform").
+- [x] 1.2 Create `infra/terraform/variables.tf`: `do_token`, `ssh_public_key`, `ssh_private_key_path`, `droplet_name` (default `uke-prod`), `region` (default `ams3`), `droplet_size` (default `s-2vcpu-2gb-amd`) (spec: "Terraform variables and outputs").
+- [x] 1.3 Create `infra/terraform/outputs.tf`: `droplet_ip`, `droplet_id` (spec: "Terraform variables and outputs").
+- [x] 1.4 Create `infra/terraform/terraform.tfvars.example` with placeholder values, no real secrets (spec: "terraform.tfvars.example and .gitignore entries").
+
+## 2. cloud-init
+
+- [x] 2.1 Create `infra/terraform/cloud-init.yaml`: installs `docker-ce`/Docker Compose plugin/`git`, creates `/opt/uke`, adds a 2GB swap file, configures UFW (allow OpenSSH/80/443, default deny incoming) — does NOT clone the repo or start the app (spec: "cloud-init provisions the OS but never starts the app"; `design.md` § D2).
+
+## 3. Terraform state backend
+
+- [x] 3.1 Create `infra/terraform/backend.tf`: `s3` backend type pointed at the `uke-terraform-state` DO Spaces bucket (region `ams3`), with `skip_credentials_validation`/`skip_metadata_api_check`/`skip_region_validation` = `true` and path-style addressing (spec: "Terraform state stored in a DigitalOcean Spaces bucket"; `design.md` § D3). Found and fixed a real Terraform-version mismatch: this environment's Terraform (1.5.7) uses the older S3-backend syntax (`endpoint` singular, `force_path_style`), not the newer `endpoints = { s3 = ... }`/`use_path_style` — verified by running `terraform init` and confirming it fails on "no credentials" (expected, no real DO Spaces keys) rather than a syntax error.
+- [x] 3.2 Update root `.gitignore`: add `infra/terraform/terraform.tfvars`, `infra/terraform/.terraform/`, `infra/terraform/*.tfstate`, `infra/terraform/*.tfstate.backup` — explicitly do NOT ignore `infra/terraform/.terraform.lock.hcl` (spec: "terraform.tfvars.example and .gitignore entries"). Also found and fixed a pre-existing unrelated bug while here: `.env.*` / `!.env.example` was silently gitignoring `.env.prod.example` (from `add-infra-digitalocean`) — only the exact filename `.env.example` was un-ignored. Added `!.env.prod.example` alongside it.
+
+## 4. CI workflow rewrite (replaces the existing ci.yml)
+
+- [x] 4.1 Rewrite `.github/workflows/ci.yml`: trigger on push/PR to any branch (spec: "GitHub Actions workflow file is configured for CI").
+- [x] 4.2 Add `lint-and-typecheck` job: `pnpm install`, `pnpm --filter @workspace/api exec tsc --noEmit`, `pnpm --filter @workspace/web exec tsc --noEmit` (spec: "CI pipeline typechecks both applications").
+- [x] 4.3 Add `test-api` job: `postgres:16` service container, `pnpm install`, `prisma migrate deploy` against the service container, `pnpm --filter @workspace/api test`, `pnpm --filter @workspace/api test:e2e` (spec: "CI pipeline tests the API with a real database"; `design.md` § D6). Read `apps/api/src/config/*.config.ts` to enumerate every fail-fast-required env var (AUTH0_DOMAIN/AUDIENCE/ROLE_CLAIM, AUTH0_M2M_*, S3_*, SMTP_*/APP_BASE_URL) and set placeholder values directly in the job's `env:` block, since `jest-e2e.setup.ts` loads `dotenv/config` but no `.env` file exists in CI.
+- [x] 4.4 Add `build-web` job: `pnpm install`, `pnpm --filter @workspace/web test`, `pnpm --filter @workspace/web build` with dummy `VITE_*` env vars set (spec: "CI pipeline builds and tests the frontend"; `design.md` § D7, D11).
+- [x] 4.5 Remove the old `lint`, `test`, `build`, and `docker` jobs entirely — no `needs:` chaining between the three new jobs (spec: "CI jobs run independently and report their own status"; REMOVED requirements for linting-across-packages and Docker image building).
+
+## 5. Deploy workflow
+
+- [x] 5.1 Create `.github/workflows/deploy.yml`: trigger on push to `master`, `needs: ci` (or equivalent gate on the CI workflow passing) (spec: "Deploy workflow triggers on push to master, gated on CI"). Used `workflow_run` (triggering workflow `CI`, `branches: [master]`, `types: [completed]`, guarded by `if: github.event.workflow_run.conclusion == 'success'`) rather than `needs:`, since `needs:` only chains jobs within one workflow file — this is the standard GitHub Actions pattern for cross-workflow gating and satisfies all three spec scenarios (no run off-master, no run on CI failure, automatic run on CI success).
+- [x] 5.2 Add a step that decodes the `DO_ENV_PROD` secret and writes it to `/opt/uke/.env.prod` on the Droplet via SSH, before the deploy step (spec: "Deploy workflow writes .env.prod from a GitHub secret on every run"; `design.md` § D8).
+- [x] 5.3 Add the SSH deploy step using `appleboy/ssh-action` (host from `DO_DROPLET_IP` secret, key from `SSH_PRIVATE_KEY` secret) running `cd /opt/uke && ./deploy.sh` (spec: "Deploy workflow invokes deploy.sh over SSH"; `design.md` § D5).
+- [x] 5.4 Add a post-deploy health check step: `curl --insecure --fail https://<droplet-ip>/api/health`, failing the workflow on a non-2xx response (spec: "Post-deploy health check").
+
+## 6. Infrastructure workflow
+
+- [x] 6.1 Create `.github/workflows/infra.yml`: `workflow_dispatch` trigger only, `environment: production` (spec: "Infrastructure workflow is manual and approval-gated").
+- [x] 6.2 Add steps: `terraform init` (backend config from secrets), `terraform plan`, `terraform apply -auto-approve` (spec: "Infrastructure workflow is manual and approval-gated"). Backend credentials (`DO_SPACES_ACCESS_KEY`/`SECRET_KEY`) are passed as `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` env vars since the `s3` backend type reads AWS-named env vars regardless of the DO Spaces target; `do_token`/`ssh_public_key` are passed as `TF_VAR_*`.
+- [x] 6.3 Add a final step that reads the `droplet_ip` Terraform output and updates the `DO_DROPLET_IP` GitHub secret via the GitHub API, using a dedicated PAT secret (not the default `GITHUB_TOKEN`) (spec: "DO_DROPLET_IP secret is updated automatically after apply"; `design.md` § D9). Used the `hmanzur/actions-set-secret` action (handles the required libsodium sealed-box encryption of the secret value) rather than hand-rolling the GitHub API call, authenticated with `GH_PAT_SECRETS_WRITE`.
+
+## 7. Documentation
+
+- [x] 7.1 Write `docs/infra/TERRAFORM.md`: one-time bootstrap (create the DO Spaces state bucket, create a DO API token, create the `GH_PAT_SECRETS_WRITE` PAT, add all GitHub Secrets), running `infra.yml` for the first Droplet, creating `.env.prod`'s `DO_ENV_PROD` secret, running `deploy.yml` for the first deploy, seeding data, updating Auth0's Allowed URLs, and the steady-state flow (push to master → automatic deploy) (proposal § docs/infra/TERRAFORM.md).
+- [x] 7.2 Cross-reference `docs/infra/SETUP.md` from `TERRAFORM.md` (or vice versa) as the manual-fallback alternative, without editing `SETUP.md` itself (proposal § Impact — "SETUP.md stays standalone"). Linked to `SETUP.md` from `TERRAFORM.md`'s intro only; `SETUP.md` left untouched (verified no edits made to it).
+
+## 8. Verification
+
+- [x] 8.1 Run `terraform fmt -check` and `terraform validate` inside `infra/terraform/` (with a local backend override, since the real DO Spaces backend isn't provisioned yet) to confirm the HCL is syntactically valid. Ran `terraform init -backend=false` + `terraform validate` — "Success! The configuration is valid." `terraform fmt -check -diff .` reported no diffs.
+- [x] 8.2 Validate `.github/workflows/ci.yml`, `deploy.yml`, and `infra.yml` are well-formed YAML. Parsed all three with Python's `yaml.safe_load` — all OK.
+- [x] 8.3 Locally simulate the `test-api` CI job: start a throwaway `postgres:16` container, run `prisma migrate deploy` against it, then `pnpm --filter @workspace/api test` and `test:e2e`, confirming the exact sequence the workflow will run actually passes. Ran against a throwaway `postgres:16` container on port 5433 with every fail-fast env var the config files require set inline: migrations applied cleanly (2 migrations), unit tests 15/15 passed, e2e tests 91/91 passed across all 8 e2e suites.
+- [x] 8.4 Locally run `pnpm --filter @workspace/web test` and `pnpm --filter @workspace/web build` with dummy `VITE_*` vars set, confirming the `build-web` job's commands succeed standalone (not relying on the already-built local `dist/`). Found and confirmed a real (non-blocking) behavior: `pnpm --filter @workspace/web test` runs Vitest in watch mode and hangs indefinitely unless `CI=true` is set — GitHub Actions sets `CI=true` on every job automatically, so `ci.yml` itself needs no change, but the local simulation required setting it explicitly. With `CI=true`: 66/66 tests passed. `vite build` (after `rm -rf apps/web/dist`) succeeded standalone in 866ms.

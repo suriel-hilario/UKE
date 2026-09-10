@@ -1,0 +1,12 @@
+import type { BaseClientOptions } from "../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../BaseClient.mjs";
+import { MembersClient } from "../resources/members/client/Client.mjs";
+export declare namespace RolesClient {
+    type Options = BaseClientOptions;
+}
+export declare class RolesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<RolesClient.Options>;
+    protected _members: MembersClient | undefined;
+    constructor(options: RolesClient.Options);
+    get members(): MembersClient;
+}

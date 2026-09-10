@@ -1,0 +1,84 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildManagementBaseUrl = buildManagementBaseUrl;
+exports.isClientOptionsWithToken = isClientOptionsWithToken;
+exports.createTokenSupplier = createTokenSupplier;
+exports.createTelemetryHeaders = createTelemetryHeaders;
+const token_provider_js_1 = require("./token-provider.js");
+const auth0_client_telemetry_js_1 = require("../../lib/middleware/auth0-client-telemetry.js");
+/**
+ * Builds the Management API v2 base URL for a tenant domain.
+ *
+ * @group Management API
+ * @internal
+ */
+function buildManagementBaseUrl(domain) {
+    return `https://${domain}/api/v2`;
+}
+/**
+ * Type guard that determines if options use static token authentication.
+ *
+ * @group Management API
+ * @internal
+ */
+function isClientOptionsWithToken(options) {
+    return "token" in options;
+}
+/**
+ * Type guard that narrows client credentials to the client-secret variant.
+ *
+ * @group Management API
+ * @internal
+ */
+function hasClientSecret(options) {
+    return "clientSecret" in options;
+}
+/**
+ * Creates a token supplier from the provided options.
+ *
+ * Returns the supplied token as-is for token-based auth, or a self-refreshing
+ * {@link TokenProvider}-backed supplier for client credentials (secret or assertion).
+ *
+ * @group Management API
+ * @internal
+ */
+function createTokenSupplier(options) {
+    var _a;
+    if (isClientOptionsWithToken(options)) {
+        return options.token;
+    }
+    const audience = (_a = options.audience) !== null && _a !== void 0 ? _a : `${buildManagementBaseUrl(options.domain)}/`;
+    // The named type guard narrows the union so each branch matches one of TokenProvider's
+    // overloaded constructors (client secret vs client assertion). Both branches forward the
+    // full options object, which is what selects the signing method downstream.
+    if (hasClientSecret(options)) {
+        const tokenProviderOptions = Object.assign(Object.assign({}, options), { audience });
+        const tokenProvider = new token_provider_js_1.TokenProvider(tokenProviderOptions);
+        return () => tokenProvider.getAccessToken();
+    }
+    else {
+        const tokenProviderOptions = Object.assign(Object.assign({}, options), { audience });
+        const tokenProvider = new token_provider_js_1.TokenProvider(tokenProviderOptions);
+        return () => tokenProvider.getAccessToken();
+    }
+}
+/**
+ * Builds the request headers for the Management client, including the `Auth0-Client` telemetry
+ * header when telemetry is enabled. Respects `telemetry: false` and custom `clientInfo`, and
+ * preserves any user-supplied headers.
+ *
+ * @group Management API
+ * @internal
+ */
+function createTelemetryHeaders(options) {
+    var _a;
+    const headers = Object.assign({}, ((_a = options.headers) !== null && _a !== void 0 ? _a : {}));
+    if (options.telemetry !== false) {
+        const telemetry = new auth0_client_telemetry_js_1.Auth0ClientTelemetry({ clientInfo: options.clientInfo });
+        const auth0ClientHeader = telemetry.getAuth0ClientHeader();
+        if (auth0ClientHeader) {
+            headers["Auth0-Client"] = auth0ClientHeader;
+        }
+    }
+    return headers;
+}

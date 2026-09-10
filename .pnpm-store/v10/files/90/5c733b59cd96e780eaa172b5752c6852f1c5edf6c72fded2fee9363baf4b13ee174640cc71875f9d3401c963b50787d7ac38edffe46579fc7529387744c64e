@@ -1,0 +1,35 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../../../../../BaseClient.js";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../../../../../BaseClient.js";
+import * as core from "../../../../../../../../../../core/index.js";
+import * as Management from "../../../../../../../../../index.js";
+export declare namespace RolesClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class RolesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<RolesClient.Options>;
+    constructor(options: RolesClient.Options);
+    /**
+     * Lists the roles which grant the user a given permission, including roles assigned directly to the user and those inherited through group memberships.
+     *
+     * @param {string} id - ID of the user to retrieve the permissions for.
+     * @param {Management.ListUserEffectivePermissionRoleSourceRequestParameters} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.effectivePermissions.sources.roles.list("id", {
+     *         from: "from",
+     *         take: 1,
+     *         resource_server_identifier: "resource_server_identifier",
+     *         permission_name: "permission_name"
+     *     })
+     */
+    list(id: string, request: Management.ListUserEffectivePermissionRoleSourceRequestParameters, requestOptions?: RolesClient.RequestOptions): Promise<core.Page<Management.UserEffectivePermissionRoleSourceResponseContent, Management.ListUserEffectivePermissionRoleSourcesResponseContent>>;
+}

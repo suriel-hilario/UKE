@@ -1,0 +1,37 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../../../BaseClient.js";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../../../BaseClient.js";
+import * as core from "../../../../../../../../core/index.js";
+import * as Management from "../../../../../../../index.js";
+import { SourcesClient } from "../resources/sources/client/Client.js";
+export declare namespace EffectiveRolesClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class EffectiveRolesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<EffectiveRolesClient.Options>;
+    protected _sources: SourcesClient | undefined;
+    constructor(options: EffectiveRolesClient.Options);
+    get sources(): SourcesClient;
+    /**
+     * Lists the roles assigned to an organization member directly or through group membership.
+     *
+     * @param {string} id - Organization identifier.
+     * @param {string} user_id - ID of the user to list effective roles for.
+     * @param {Management.ListOrganizationMemberEffectiveRolesRequestParameters} request
+     * @param {EffectiveRolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.organizations.members.effectiveRoles.list("id", "user_id", {
+     *         from: "from",
+     *         take: 1
+     *     })
+     */
+    list(id: string, user_id: string, request?: Management.ListOrganizationMemberEffectiveRolesRequestParameters, requestOptions?: EffectiveRolesClient.RequestOptions): Promise<core.Page<Management.OrganizationMemberEffectiveRole, Management.ListOrganizationMemberEffectiveRolesResponseContent>>;
+}

@@ -1,0 +1,50 @@
+import * as core from "../core/index.mjs";
+import type { ManagementClient } from "./ManagementClient.mjs";
+/**
+ * Headers accepted by the Management client and its sub-clients.
+ *
+ * @group Management API
+ * @internal
+ */
+export type ManagementHeaders = Record<string, string | core.Supplier<string | null | undefined> | null | undefined>;
+/**
+ * The full set of authentication configurations accepted by the Management client, either a
+ * static token or client credentials (client secret or client assertion).
+ *
+ * @group Management API
+ * @internal
+ */
+export type ManagementAuthConfig = ManagementClient.ManagementClientOptionsWithToken | ManagementClient.ManagementClientOptionsWithClientCredentials;
+/**
+ * Builds the Management API v2 base URL for a tenant domain.
+ *
+ * @group Management API
+ * @internal
+ */
+export declare function buildManagementBaseUrl(domain: string): string;
+/**
+ * Type guard that determines if options use static token authentication.
+ *
+ * @group Management API
+ * @internal
+ */
+export declare function isClientOptionsWithToken(options: ManagementAuthConfig): options is ManagementClient.ManagementClientOptionsWithToken;
+/**
+ * Creates a token supplier from the provided options.
+ *
+ * Returns the supplied token as-is for token-based auth, or a self-refreshing
+ * {@link TokenProvider}-backed supplier for client credentials (secret or assertion).
+ *
+ * @group Management API
+ * @internal
+ */
+export declare function createTokenSupplier(options: ManagementAuthConfig): core.Supplier<string>;
+/**
+ * Builds the request headers for the Management client, including the `Auth0-Client` telemetry
+ * header when telemetry is enabled. Respects `telemetry: false` and custom `clientInfo`, and
+ * preserves any user-supplied headers.
+ *
+ * @group Management API
+ * @internal
+ */
+export declare function createTelemetryHeaders(options: ManagementAuthConfig): ManagementHeaders;

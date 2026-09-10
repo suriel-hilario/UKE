@@ -1,0 +1,63 @@
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-bg);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+}
+
+@media (min-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.statsGrid dt {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.statsGrid dd {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progressSuccess::-webkit-progress-value {
+  background-color: var(--color-success);
+}
+.progressSuccess::-moz-progress-bar {
+  background-color: var(--color-success);
+}
+
+.progressWarning::-webkit-progress-value {
+  background-color: var(--color-warning);
+}
+.progressWarning::-moz-progress-bar {
+  background-color: var(--color-warning);
+}
+
+.progressDanger::-webkit-progress-value {
+  background-color: var(--color-danger);
+}
+.progressDanger::-moz-progress-bar {
+  background-color: var(--color-danger);
+}

@@ -1,0 +1,45 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../BaseClient.js";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../BaseClient.js";
+import * as core from "../../../../../../core/index.js";
+import * as Management from "../../../../../index.js";
+export declare namespace PhoneProviderProtectionClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class PhoneProviderProtectionClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<PhoneProviderProtectionClient.Options>;
+    constructor(options: PhoneProviderProtectionClient.Options);
+    /**
+     * Get the phone provider protection configuration for a tenant.
+     *
+     * @param {PhoneProviderProtectionClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.attackProtection.phoneProviderProtection.get()
+     */
+    get(requestOptions?: PhoneProviderProtectionClient.RequestOptions): core.HttpResponsePromise<Management.GetPhoneProviderProtectionResponseContent>;
+    private __get;
+    /**
+     * Update the phone provider protection configuration for a tenant.
+     *
+     * @param {Management.PatchPhoneProviderProtectionRequestContent} request
+     * @param {PhoneProviderProtectionClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.attackProtection.phoneProviderProtection.patch({
+     *         type: "exponential"
+     *     })
+     */
+    patch(request: Management.PatchPhoneProviderProtectionRequestContent, requestOptions?: PhoneProviderProtectionClient.RequestOptions): core.HttpResponsePromise<Management.PatchPhoneProviderProtectionResponseContent>;
+    private __patch;
+}

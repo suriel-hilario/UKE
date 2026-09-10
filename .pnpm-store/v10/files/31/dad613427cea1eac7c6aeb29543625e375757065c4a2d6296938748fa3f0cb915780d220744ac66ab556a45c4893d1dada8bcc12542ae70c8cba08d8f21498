@@ -1,0 +1,89 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ManagementClient = void 0;
+const Client_js_1 = require("../Client.js");
+const request_options_js_1 = require("../request-options.js");
+const auth_helpers_js_1 = require("./auth-helpers.js");
+/**
+ * Auth0 Management API client wrapper.
+ *
+ * Provides a high-level interface to Auth0's Management API with automatic
+ * token management, telemetry, and Auth0-specific configuration.
+ *
+ * @group Management API
+ * @example Using client credentials (client secret)
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientSecret: 'your-client-secret'
+ * });
+ * ```
+ *
+ * @example Using client credentials (client assertion)
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientAssertionSigningKey: 'your-private-key'
+ * });
+ * ```
+ *
+ * @example Using existing token
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   token: 'your-static-token'  // or () => getAccessToken()
+ * });
+ * ```
+ *
+ * @example Using custom domain header
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientSecret: 'your-client-secret',
+ *   withCustomDomainHeader: 'auth.example.com'  // Auto-applies to whitelisted endpoints
+ * });
+ * ```
+ *
+ * @example Using custom fetcher with custom domain header (they work together)
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientSecret: 'your-client-secret',
+ *   withCustomDomainHeader: 'auth.example.com',  // Custom domain header logic
+ *   fetcher: async (args) => {
+ *     console.log('Making request:', args.url);  // Custom logging
+ *     return fetch(args.url, { ...args });       // Custom fetch implementation
+ *   }
+ * });
+ * ```
+ */
+class ManagementClient extends Client_js_1.ManagementClient {
+    /**
+     * Creates a new Management API client instance.
+     *
+     * @param _options - Configuration options for the Management Client
+     * @group Management API
+     */
+    constructor(_options) {
+        const baseUrl = `https://${_options.domain}/api/v2`;
+        const headers = (0, auth_helpers_js_1.createTelemetryHeaders)(_options);
+        const token = (0, auth_helpers_js_1.createTokenSupplier)(_options);
+        // Temporarily remove fetcher from options to avoid people passing it for now
+        delete _options.fetcher;
+        delete _options.fetch;
+        // Prepare the base client options
+        let clientOptions = Object.assign(Object.assign({}, _options), { baseUrl,
+            headers,
+            token });
+        // Apply custom domain header configuration if provided
+        if ("withCustomDomainHeader" in _options && _options.withCustomDomainHeader !== undefined) {
+            clientOptions = (0, request_options_js_1.withCustomDomainHeader)(_options.withCustomDomainHeader, clientOptions);
+        }
+        super(clientOptions);
+    }
+}
+exports.ManagementClient = ManagementClient;

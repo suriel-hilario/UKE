@@ -4,6 +4,15 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.prod.example
 playwright-report/
 test-results/
 .DS_Store
+
+# Terraform (infra/terraform/)
+infra/terraform/terraform.tfvars
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.backup
+# infra/terraform/.terraform.lock.hcl is intentionally NOT ignored — it pins
+# provider versions and is committed.

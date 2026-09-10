@@ -1,0 +1,38 @@
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--space-2);
+}
+
+.barTrack {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-bg);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-fast);
+}
+
+.alerta {
+  display: inline-block;
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.alertaIntervenir {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.alertaVigilar {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}

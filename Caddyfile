@@ -1,0 +1,50 @@
+{
+	# Self-signed HTTPS for IP-only access. Once a domain is added, switch to it by
+	# replacing the ":443" site block below (dropping `tls internal`, and dropping
+	# the ":80" redirect block, since Caddy issues and renews a real Let's Encrypt
+	# certificate automatically for a real domain, redirect included). Example,
+	# once you have a domain:
+	#
+	#   your-domain.com {
+	#       encode gzip
+	#       handle /api/* {
+	#           uri strip_prefix /api
+	#           reverse_proxy api:3001
+	#       }
+	#       handle {
+	#           root * /srv/web
+	#           try_files {path} /index.html
+	#           file_server
+	#       }
+	#   }
+}
+
+:80 {
+	redir https://{host}{uri} permanent
+}
+
+:443 {
+	# `on_demand` is required because this site has no fixed hostname (IP-only) —
+	# without it, Caddy's `tls internal` refuses to mint a certificate for
+	# whatever host the client connects with.
+	tls internal {
+		on_demand
+	}
+
+	encode gzip
+
+	# `handle` blocks are mutually exclusive and evaluated in the order written,
+	# unlike bare directives (which Caddy reorders by a fixed priority regardless
+	# of file order — `try_files` would otherwise run before this block and
+	# rewrite /api/* requests to /index.html before the API route ever saw them).
+	handle /api/* {
+		uri strip_prefix /api
+		reverse_proxy api:3001
+	}
+
+	handle {
+		root * /srv/web
+		try_files {path} /index.html
+		file_server
+	}
+}

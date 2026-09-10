@@ -1,0 +1,106 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createManagementAuth = createManagementAuth;
+const core = __importStar(require("../core/index.js"));
+const request_options_js_1 = require("../request-options.js");
+const auth_helpers_js_1 = require("./auth-helpers.js");
+/**
+ * Creates a shared authentication context for the Auth0 Management API without pulling in the
+ * full {@link ManagementClient}. This is useful for size-constrained runtimes (for example
+ * Cloudflare Workers) where you import individual sub-clients such as `auth0/clients` and
+ * `auth0/users` and want to handle auth once.
+ *
+ * When client credentials are provided, tokens are obtained via the client credentials grant
+ * and cached until shortly before they expire. When a static `token` is provided, it is used
+ * as-is.
+ *
+ * The returned {@link ManagementAuth.clientOptions} carry the same telemetry headers, request
+ * timeouts, retry counts, logging, and custom domain behaviour that the full `ManagementClient`
+ * applies, so individually imported sub-clients behave consistently.
+ *
+ * @group Management API
+ * @public
+ *
+ * @example Client credentials with individual sub-clients
+ * ```ts
+ * import { createManagementAuth } from "auth0/management";
+ * import { ClientsClient } from "auth0/clients";
+ * import { UsersClient } from "auth0/users";
+ *
+ * const auth = createManagementAuth({
+ *     domain: "your-tenant.auth0.com",
+ *     clientId: "your-client-id",
+ *     clientSecret: "your-client-secret",
+ * });
+ *
+ * const clients = new ClientsClient(auth.clientOptions);
+ * const users = new UsersClient(auth.clientOptions);
+ * ```
+ *
+ * @example Static token
+ * ```ts
+ * const auth = createManagementAuth({
+ *     domain: "your-tenant.auth0.com",
+ *     token: "your-api-v2-token",
+ * });
+ * ```
+ *
+ * @example Custom domain header (applied to whitelisted endpoints)
+ * ```ts
+ * const auth = createManagementAuth({
+ *     domain: "your-tenant.auth0.com",
+ *     clientId: "your-client-id",
+ *     clientSecret: "your-client-secret",
+ *     withCustomDomainHeader: "auth.example.com",
+ * });
+ * ```
+ */
+function createManagementAuth(options) {
+    const baseUrl = (0, auth_helpers_js_1.buildManagementBaseUrl)(options.domain);
+    const tokenSupplier = (0, auth_helpers_js_1.createTokenSupplier)(options);
+    const getToken = () => core.Supplier.get(tokenSupplier);
+    const headers = (0, auth_helpers_js_1.createTelemetryHeaders)(options);
+    let clientOptions = Object.assign(Object.assign(Object.assign(Object.assign({ baseUrl, token: getToken }, (Object.keys(headers).length > 0 ? { headers } : {})), (options.timeoutInSeconds !== undefined ? { timeoutInSeconds: options.timeoutInSeconds } : {})), (options.maxRetries !== undefined ? { maxRetries: options.maxRetries } : {})), (options.logging !== undefined ? { logging: options.logging } : {}));
+    // Apply custom domain header configuration if provided, matching the full ManagementClient.
+    if ("withCustomDomainHeader" in options && options.withCustomDomainHeader !== undefined) {
+        clientOptions = (0, request_options_js_1.withCustomDomainHeader)(options.withCustomDomainHeader, clientOptions);
+    }
+    return {
+        baseUrl,
+        getToken,
+        clientOptions,
+    };
+}

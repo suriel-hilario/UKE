@@ -1,0 +1,37 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../BaseClient.mjs";
+import * as core from "../../../../../../core/index.mjs";
+import * as Management from "../../../../../index.mjs";
+import { SourcesClient } from "../resources/sources/client/Client.mjs";
+export declare namespace EffectivePermissionsClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class EffectivePermissionsClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<EffectivePermissionsClient.Options>;
+    protected _sources: SourcesClient | undefined;
+    constructor(options: EffectivePermissionsClient.Options);
+    get sources(): SourcesClient;
+    /**
+     * Returns the list of effective permissions for a user, taking into account permissions granted directly to the user, as well as those inherited through roles and group memberships.
+     *
+     * @param {string} id - ID of the user to retrieve the permissions for.
+     * @param {Management.ListUserEffectivePermissionsRequestParameters} request
+     * @param {EffectivePermissionsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.effectivePermissions.list("id", {
+     *         from: "from",
+     *         take: 1,
+     *         resource_server_identifier: "resource_server_identifier"
+     *     })
+     */
+    list(id: string, request: Management.ListUserEffectivePermissionsRequestParameters, requestOptions?: EffectivePermissionsClient.RequestOptions): Promise<core.Page<Management.UserEffectivePermissionResponseContent, Management.ListUserEffectivePermissionsResponseContent>>;
+}

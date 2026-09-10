@@ -1,0 +1,31 @@
+/**
+ * Configure the retry logic for http calls.
+ * By default, this retries any request that returns a 429 3 times.
+ */
+export interface RetryConfiguration {
+    /**
+     * Configure the usage of retries.
+     * Defaults to true on the Management Client and false on the Authentication Client.
+     */
+    enabled?: boolean;
+    /**
+     * Configure the max amount of retries the SDK should do.
+     * Defaults to 3.
+     * Note: this budget is shared between HTTP status code retries (e.g. 429) and
+     * transient network error retries (e.g. ECONNRESET). For example, with maxRetries: 3,
+     * 2 network retries and 1 status code retry would exhaust the full budget.
+     */
+    maxRetries?: number;
+    /**
+     * HTTP Status Codes on which the SDK should trigger retries.
+     * Note: transient network errors (ECONNRESET, EPIPE, ECONNABORTED) are always retried
+     * up to maxRetries regardless of this setting. Use `enabled: false` to disable all retries.
+     * Defaults to [429].
+     */
+    retryWhen?: number[];
+}
+/**
+ * @private
+ * Function that retries the provided action callback for a configurable amount of time, defaults to 3.
+ */
+export declare function retry(action: () => Promise<Response>, { maxRetries, retryWhen }: RetryConfiguration): Promise<Response>;

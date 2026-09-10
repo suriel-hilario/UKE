@@ -1,0 +1,70 @@
+import * as core from "../core/index.mjs";
+import { withCustomDomainHeader } from "../request-options.mjs";
+import { buildManagementBaseUrl, createTelemetryHeaders, createTokenSupplier, } from "./auth-helpers.mjs";
+/**
+ * Creates a shared authentication context for the Auth0 Management API without pulling in the
+ * full {@link ManagementClient}. This is useful for size-constrained runtimes (for example
+ * Cloudflare Workers) where you import individual sub-clients such as `auth0/clients` and
+ * `auth0/users` and want to handle auth once.
+ *
+ * When client credentials are provided, tokens are obtained via the client credentials grant
+ * and cached until shortly before they expire. When a static `token` is provided, it is used
+ * as-is.
+ *
+ * The returned {@link ManagementAuth.clientOptions} carry the same telemetry headers, request
+ * timeouts, retry counts, logging, and custom domain behaviour that the full `ManagementClient`
+ * applies, so individually imported sub-clients behave consistently.
+ *
+ * @group Management API
+ * @public
+ *
+ * @example Client credentials with individual sub-clients
+ * ```ts
+ * import { createManagementAuth } from "auth0/management";
+ * import { ClientsClient } from "auth0/clients";
+ * import { UsersClient } from "auth0/users";
+ *
+ * const auth = createManagementAuth({
+ *     domain: "your-tenant.auth0.com",
+ *     clientId: "your-client-id",
+ *     clientSecret: "your-client-secret",
+ * });
+ *
+ * const clients = new ClientsClient(auth.clientOptions);
+ * const users = new UsersClient(auth.clientOptions);
+ * ```
+ *
+ * @example Static token
+ * ```ts
+ * const auth = createManagementAuth({
+ *     domain: "your-tenant.auth0.com",
+ *     token: "your-api-v2-token",
+ * });
+ * ```
+ *
+ * @example Custom domain header (applied to whitelisted endpoints)
+ * ```ts
+ * const auth = createManagementAuth({
+ *     domain: "your-tenant.auth0.com",
+ *     clientId: "your-client-id",
+ *     clientSecret: "your-client-secret",
+ *     withCustomDomainHeader: "auth.example.com",
+ * });
+ * ```
+ */
+export function createManagementAuth(options) {
+    const baseUrl = buildManagementBaseUrl(options.domain);
+    const tokenSupplier = createTokenSupplier(options);
+    const getToken = () => core.Supplier.get(tokenSupplier);
+    const headers = createTelemetryHeaders(options);
+    let clientOptions = Object.assign(Object.assign(Object.assign(Object.assign({ baseUrl, token: getToken }, (Object.keys(headers).length > 0 ? { headers } : {})), (options.timeoutInSeconds !== undefined ? { timeoutInSeconds: options.timeoutInSeconds } : {})), (options.maxRetries !== undefined ? { maxRetries: options.maxRetries } : {})), (options.logging !== undefined ? { logging: options.logging } : {}));
+    // Apply custom domain header configuration if provided, matching the full ManagementClient.
+    if ("withCustomDomainHeader" in options && options.withCustomDomainHeader !== undefined) {
+        clientOptions = withCustomDomainHeader(options.withCustomDomainHeader, clientOptions);
+    }
+    return {
+        baseUrl,
+        getToken,
+        clientOptions,
+    };
+}

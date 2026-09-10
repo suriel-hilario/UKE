@@ -1,0 +1,294 @@
+// Prisma schema — transcripción literal de UKE-Docs/inventario/98-modelo-datos.md
+// Cada modelo y enum cita su sección de origen en 98-modelo-datos.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// 1. Catálogo y organización (98-modelo-datos.md § 1)
+// ---------------------------------------------------------------------------
+
+enum TemporadaEstado {
+  abierta
+  cerrada
+}
+
+/// 98-modelo-datos.md § temporada (G-C4, G-A7)
+model temporada {
+  id           String          @id @default(uuid()) @db.Uuid
+  nombre       String          @unique
+  fecha_inicio DateTime        @db.Date
+  fecha_fin    DateTime        @db.Date
+  estado       TemporadaEstado
+
+  bloques  bloque[]
+  equipos  equipo[]
+  festivos festivo[]
+}
+
+enum BloqueTipo {
+  pretemporada
+  temporada
+  unico
+}
+
+/// 98-modelo-datos.md § bloque (G-A3)
+model bloque {
+  id               String     @id @default(uuid()) @db.Uuid
+  temporada_id     String     @db.Uuid
+  temporada        temporada  @relation(fields: [temporada_id], references: [id])
+  tipo             BloqueTipo
+  fecha_activacion DateTime   @db.Date
+
+  sesiones sesion[]
+  jornadas jornada[]
+
+  @@unique([temporada_id, tipo])
+}
+
+/// 98-modelo-datos.md § categoria: catálogo fijo (00-especificaciones § 1; G-B1)
+enum Categoria {
+  eskola
+  f7
+  f11
+}
+
+/// 98-modelo-datos.md § equipo (inv. 01/03/04; G-C1, G-C6, G-C7)
+model equipo {
+  id                  String    @id @default(uuid()) @db.Uuid
+  temporada_id        String    @db.Uuid
+  temporada           temporada @relation(fields: [temporada_id], references: [id])
+  categoria           Categoria
+  nombre              String
+  color               String?
+  icono               String?
+  minutos_por_periodo Int
+  num_periodos        Int
+  dias_entrenamiento  Int[]
+
+  miembros       miembro_equipo[]
+  sesiones       sesion[]
+  jornadas       jornada[]
+  usuarios       usuario_equipo[]
+  notificaciones notificacion_enviada[]
+}
+
+/// 98-modelo-datos.md § festivo (G-C11)
+model festivo {
+  id           String    @id @default(uuid()) @db.Uuid
+  temporada_id String    @db.Uuid
+  temporada    temporada @relation(fields: [temporada_id], references: [id])
+  fecha        DateTime  @db.Date
+  descripcion  String?
+
+  @@unique([temporada_id, fecha])
+}
+
+// ---------------------------------------------------------------------------
+// 2. Personas y usuarios (98-modelo-datos.md § 2)
+// ---------------------------------------------------------------------------
+
+enum UsuarioRol {
+  admin
+  director
+  coordinador
+  entrenador
+}
+
+enum Idioma {
+  eu
+  es
+}
+
+/// 98-modelo-datos.md § usuario (G-B1, G-B2, G-A8)
+model usuario {
+  id                 String     @id @default(uuid()) @db.Uuid
+  auth0_id           String     @unique
+  nombre_visible     String
+  email              String     @unique
+  rol                UsuarioRol
+  categoria_asignada Categoria?
+  idioma             Idioma     @default(eu)
+
+  persona        persona?
+  equipos        usuario_equipo[]
+  notificaciones notificacion_enviada[]
+}
+
+/// 98-modelo-datos.md § persona (inv. 01 §2, 03; G-A4)
+model persona {
+  id         String   @id @default(uuid()) @db.Uuid
+  usuario_id String?  @unique @db.Uuid
+  usuario    usuario? @relation(fields: [usuario_id], references: [id])
+  nombre     String
+  alias      String?
+  foto_url   String?
+
+  miembros miembro_equipo[]
+}
+
+enum MiembroGrupo {
+  con_ficha
+  sin_ficha
+  entrenador
+}
+
+/// 98-modelo-datos.md § miembro_equipo (inv. 03 grupos; G-A4)
+model miembro_equipo {
+  id                  String       @id @default(uuid()) @db.Uuid
+  equipo_id           String       @db.Uuid
+  equipo              equipo       @relation(fields: [equipo_id], references: [id])
+  persona_id          String       @db.Uuid
+  persona             persona      @relation(fields: [persona_id], references: [id])
+  grupo               MiembroGrupo
+  rol_entrenador      String?
+  fecha_incorporacion DateTime     @db.Date
+  fecha_baja          DateTime?    @db.Date
+  orden               Int
+
+  registros       registro_asistencia[]
+  participaciones participacion_jornada[]
+
+  @@unique([equipo_id, persona_id])
+}
+
+/// 98-modelo-datos.md § usuario_equipo (G-A8)
+model usuario_equipo {
+  id         String  @id @default(uuid()) @db.Uuid
+  usuario_id String  @db.Uuid
+  usuario    usuario @relation(fields: [usuario_id], references: [id])
+  equipo_id  String  @db.Uuid
+  equipo     equipo  @relation(fields: [equipo_id], references: [id])
+
+  @@unique([usuario_id, equipo_id])
+}
+
+// ---------------------------------------------------------------------------
+// 3. Calendario y asistencia (98-modelo-datos.md § 3)
+// ---------------------------------------------------------------------------
+
+enum SesionTipo {
+  entrenamiento
+  partido
+}
+
+enum SesionOrigen {
+  regla
+  manual
+}
+
+/// 98-modelo-datos.md § sesion (G-C8; inv. 01/03)
+model sesion {
+  id        String       @id @default(uuid()) @db.Uuid
+  equipo_id String       @db.Uuid
+  equipo    equipo       @relation(fields: [equipo_id], references: [id])
+  bloque_id String       @db.Uuid
+  bloque    bloque       @relation(fields: [bloque_id], references: [id])
+  fecha     DateTime     @db.Date
+  numero    Int?
+  tipo      SesionTipo
+  origen    SesionOrigen
+  eliminada Boolean      @default(false)
+
+  registros registro_asistencia[]
+
+  @@unique([equipo_id, fecha, tipo])
+}
+
+/// 98-modelo-datos.md § registro_asistencia (inv. 01 §2, 02, 03; G-C2)
+/// `estado` es texto libre: el CHECK por categoría (D1 — Eskola/F7/entrenadores:
+/// P|A; F11: 1|EM|RC|VA|LS|EN|TR|EX|OT|NJ) se aplica en la capa de aplicación,
+/// no como constraint de base de datos.
+model registro_asistencia {
+  id                String         @id @default(uuid()) @db.Uuid
+  sesion_id         String         @db.Uuid
+  sesion            sesion         @relation(fields: [sesion_id], references: [id])
+  miembro_equipo_id String         @db.Uuid
+  miembro_equipo    miembro_equipo @relation(fields: [miembro_equipo_id], references: [id])
+  estado            String
+  nota              String?
+  updatedAt         DateTime       @default(now()) @updatedAt
+
+  @@unique([sesion_id, miembro_equipo_id])
+}
+
+// ---------------------------------------------------------------------------
+// 4. Minutaje (98-modelo-datos.md § 4)
+// ---------------------------------------------------------------------------
+
+enum Campo {
+  local
+  visitante
+}
+
+enum BajaTipo {
+  LES
+  SAN
+  ENF
+  VAC
+  NJ
+}
+
+/// 98-modelo-datos.md § jornada
+model jornada {
+  id           String    @id @default(uuid()) @db.Uuid
+  equipo_id    String    @db.Uuid
+  equipo       equipo    @relation(fields: [equipo_id], references: [id])
+  bloque_id    String    @db.Uuid
+  bloque       bloque    @relation(fields: [bloque_id], references: [id])
+  numero       Int
+  rival        String?
+  fecha        DateTime? @db.Date
+  campo        Campo
+  goles_favor  Int       @default(0)
+  goles_contra Int       @default(0)
+
+  participaciones participacion_jornada[]
+
+  @@unique([equipo_id, bloque_id, numero])
+}
+
+/// 98-modelo-datos.md § participacion_jornada
+model participacion_jornada {
+  id                String         @id @default(uuid()) @db.Uuid
+  jornada_id        String         @db.Uuid
+  jornada           jornada        @relation(fields: [jornada_id], references: [id])
+  miembro_equipo_id String         @db.Uuid
+  miembro_equipo    miembro_equipo @relation(fields: [miembro_equipo_id], references: [id])
+  convocado         Boolean
+  jugado            Boolean
+  titular           Boolean
+  baja              BajaTipo?
+  minutos           Int            @default(0)
+  goles             Int            @default(0)
+  updatedAt         DateTime       @default(now()) @updatedAt
+
+  @@unique([jornada_id, miembro_equipo_id])
+}
+
+// ---------------------------------------------------------------------------
+// 5. Notificaciones y panel de estado (98-modelo-datos.md § 5)
+// ---------------------------------------------------------------------------
+
+enum NotificacionTipo {
+  asistencia_dia
+  minutaje_dia
+  recordatorio_semanal
+}
+
+/// 98-modelo-datos.md § notificacion_enviada (G-A5)
+model notificacion_enviada {
+  id          String           @id @default(uuid()) @db.Uuid
+  usuario_id  String           @db.Uuid
+  usuario     usuario          @relation(fields: [usuario_id], references: [id])
+  equipo_id   String           @db.Uuid
+  equipo      equipo           @relation(fields: [equipo_id], references: [id])
+  tipo        NotificacionTipo
+  fecha_envio DateTime         @db.Timestamptz
+}

@@ -1,0 +1,36 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../BaseClient.mjs";
+import * as core from "../../../../../../core/index.mjs";
+import * as Management from "../../../../../index.mjs";
+import { RolesClient } from "../resources/roles/client/Client.mjs";
+export declare namespace GroupsClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class GroupsClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<GroupsClient.Options>;
+    protected _roles: RolesClient | undefined;
+    constructor(options: GroupsClient.Options);
+    get roles(): RolesClient;
+    /**
+     * Lists the groups that are assigned to the specified organization.
+     *
+     * @param {string} organization_id - ID of the organization
+     * @param {Management.ListOrganizationGroupsRequestParameters} request
+     * @param {GroupsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.organizations.groups.list("organization_id", {
+     *         from: "from",
+     *         take: 1
+     *     })
+     */
+    list(organization_id: string, request?: Management.ListOrganizationGroupsRequestParameters, requestOptions?: GroupsClient.RequestOptions): Promise<core.Page<Management.Group, Management.ListOrganizationGroupsResponseContent>>;
+}

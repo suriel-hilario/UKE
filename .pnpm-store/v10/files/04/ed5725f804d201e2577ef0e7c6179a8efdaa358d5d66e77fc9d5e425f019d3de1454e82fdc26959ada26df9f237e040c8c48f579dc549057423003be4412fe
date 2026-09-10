@@ -1,0 +1,85 @@
+import { ManagementClient as FernClient } from "../Client.mjs";
+import { withCustomDomainHeader } from "../request-options.mjs";
+import { createTelemetryHeaders, createTokenSupplier } from "./auth-helpers.mjs";
+/**
+ * Auth0 Management API client wrapper.
+ *
+ * Provides a high-level interface to Auth0's Management API with automatic
+ * token management, telemetry, and Auth0-specific configuration.
+ *
+ * @group Management API
+ * @example Using client credentials (client secret)
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientSecret: 'your-client-secret'
+ * });
+ * ```
+ *
+ * @example Using client credentials (client assertion)
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientAssertionSigningKey: 'your-private-key'
+ * });
+ * ```
+ *
+ * @example Using existing token
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   token: 'your-static-token'  // or () => getAccessToken()
+ * });
+ * ```
+ *
+ * @example Using custom domain header
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientSecret: 'your-client-secret',
+ *   withCustomDomainHeader: 'auth.example.com'  // Auto-applies to whitelisted endpoints
+ * });
+ * ```
+ *
+ * @example Using custom fetcher with custom domain header (they work together)
+ * ```typescript
+ * const client = new ManagementClient({
+ *   domain: 'your-tenant.auth0.com',
+ *   clientId: 'your-client-id',
+ *   clientSecret: 'your-client-secret',
+ *   withCustomDomainHeader: 'auth.example.com',  // Custom domain header logic
+ *   fetcher: async (args) => {
+ *     console.log('Making request:', args.url);  // Custom logging
+ *     return fetch(args.url, { ...args });       // Custom fetch implementation
+ *   }
+ * });
+ * ```
+ */
+export class ManagementClient extends FernClient {
+    /**
+     * Creates a new Management API client instance.
+     *
+     * @param _options - Configuration options for the Management Client
+     * @group Management API
+     */
+    constructor(_options) {
+        const baseUrl = `https://${_options.domain}/api/v2`;
+        const headers = createTelemetryHeaders(_options);
+        const token = createTokenSupplier(_options);
+        // Temporarily remove fetcher from options to avoid people passing it for now
+        delete _options.fetcher;
+        delete _options.fetch;
+        // Prepare the base client options
+        let clientOptions = Object.assign(Object.assign({}, _options), { baseUrl,
+            headers,
+            token });
+        // Apply custom domain header configuration if provided
+        if ("withCustomDomainHeader" in _options && _options.withCustomDomainHeader !== undefined) {
+            clientOptions = withCustomDomainHeader(_options.withCustomDomainHeader, clientOptions);
+        }
+        super(clientOptions);
+    }
+}

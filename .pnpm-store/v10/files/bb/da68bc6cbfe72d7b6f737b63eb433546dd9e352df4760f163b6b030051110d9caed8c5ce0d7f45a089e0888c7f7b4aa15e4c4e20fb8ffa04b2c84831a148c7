@@ -1,0 +1,36 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../../../BaseClient.mjs";
+import * as core from "../../../../../../../../core/index.mjs";
+import * as Management from "../../../../../../../index.mjs";
+export declare namespace MembersClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class MembersClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<MembersClient.Options>;
+    constructor(options: MembersClient.Options);
+    /**
+     * List the organization members assigned a specific role within the context of an organization.
+     *
+     * @param {string} id - ID of the organization.
+     * @param {string} role_id - ID of the role to retrieve the assigned members for.
+     * @param {Management.ListOrganizationRoleMembersRequestParameters} request
+     * @param {MembersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.organizations.roles.members.list("id", "role_id", {
+     *         from: "from",
+     *         take: 1,
+     *         fields: "fields",
+     *         include_fields: true
+     *     })
+     */
+    list(id: string, role_id: string, request?: Management.ListOrganizationRoleMembersRequestParameters, requestOptions?: MembersClient.RequestOptions): Promise<core.Page<Management.RoleMember, Management.ListOrganizationRoleMembersResponseContent>>;
+}

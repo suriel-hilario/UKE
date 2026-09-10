@@ -1,0 +1,36 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../BaseClient.mjs";
+import * as core from "../../../../../../core/index.mjs";
+import * as Management from "../../../../../index.mjs";
+import { SourcesClient } from "../resources/sources/client/Client.mjs";
+export declare namespace EffectiveRolesClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class EffectiveRolesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<EffectiveRolesClient.Options>;
+    protected _sources: SourcesClient | undefined;
+    constructor(options: EffectiveRolesClient.Options);
+    get sources(): SourcesClient;
+    /**
+     * Retrieve detailed list of effective roles for a user, including roles assigned directly and through group memberships.
+     *
+     * @param {string} id - ID of the user to list effective roles for.
+     * @param {Management.ListUserEffectiveRolesRequestParameters} request
+     * @param {EffectiveRolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.effectiveRoles.list("id", {
+     *         from: "from",
+     *         take: 1
+     *     })
+     */
+    list(id: string, request?: Management.ListUserEffectiveRolesRequestParameters, requestOptions?: EffectiveRolesClient.RequestOptions): Promise<core.Page<Management.UserEffectiveRole, Management.ListUserEffectiveRolesResponseContent>>;
+}

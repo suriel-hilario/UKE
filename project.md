@@ -36,6 +36,12 @@ Aplicación de gestión para Urretxindorra Kirol Elkartea: asistencia a entrenam
 - Tests: Vitest + Testing Library (web), Jest + Supertest (api). Cada change incluye tests de sus requirements.
 - Cada change de OpenSpec es un slice pequeño (una capability o menos). Validación: `openspec validate --strict` + revisión humana de trazabilidad antes de apply. Tras apply: verificación contra el mockup correspondiente ("golden screen").
 
+## Diseño visual
+El sistema de diseño (tokens de color, tipografía, componentes visuales) se implementa
+en el change `add-design-system`, posterior a toda la funcionalidad. Los changes
+funcionales NO añaden CSS más allá del mínimo estructural necesario para que la UI
+sea usable. No se inventan estilos ni librerías de componentes.
+
 ## Secuencia de changes prevista
 1. `add-infrastructure` — monorepo, docker-compose, CI (lint+test+build). Sin funcionalidad.
 2. `add-auth` — Auth0 front+back, guards por rol, endpoint `/me`.

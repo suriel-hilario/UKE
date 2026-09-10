@@ -1,0 +1,52 @@
+#cloud-config
+# OS-level provisioning only. Does NOT clone the repo or start the app —
+# that is the deploy pipeline's job (.github/workflows/deploy.yml running
+# deploy.sh over SSH). See design.md § D2 for why these are kept separate.
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - git
+
+write_files:
+  - path: /etc/docker-install.sh
+    permissions: '0755'
+    content: |
+      #!/bin/sh
+      set -e
+      install -m 0755 -d /etc/apt/keyrings
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+      chmod a+r /etc/apt/keyrings/docker.asc
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+        > /etc/apt/sources.list.d/docker.list
+      apt-get update
+      apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+runcmd:
+  # Docker + Compose plugin
+  - sh /etc/docker-install.sh
+
+  # App directory (owned by root; deploy.yml SSHes in as root per SETUP.md/TERRAFORM.md convention)
+  - mkdir -p /opt/uke
+  - chmod 755 /opt/uke
+
+  # 2GB swap file (this Droplet has 2GB RAM — a production image build can be memory-tight)
+  - fallocate -l 2G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
+  # Firewall: allow only SSH/HTTP/HTTPS, deny everything else inbound.
+  # (This is in addition to the digitalocean_firewall resource in main.tf —
+  # intentional defense in depth, see design.md § D1.)
+  - ufw allow OpenSSH
+  - ufw allow 80/tcp
+  - ufw allow 443/tcp
+  - ufw default deny incoming
+  - ufw default allow outgoing
+  - ufw --force enable

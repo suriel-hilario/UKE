@@ -1,0 +1,77 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../../../BaseClient.js";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../../../BaseClient.js";
+import * as core from "../../../../../../../../core/index.js";
+import * as Management from "../../../../../../../index.js";
+export declare namespace RolesClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class RolesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<RolesClient.Options>;
+    constructor(options: RolesClient.Options);
+    /**
+     * Lists the roles assigned to the specified group in the context of an organization.
+     *
+     * @param {string} organization_id - ID of the organization
+     * @param {string} group_id - ID of the group
+     * @param {Management.ListOrganizationGroupRolesRequestParameters} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.organizations.groups.roles.list("organization_id", "group_id", {
+     *         from: "from",
+     *         take: 1
+     *     })
+     */
+    list(organization_id: string, group_id: string, request?: Management.ListOrganizationGroupRolesRequestParameters, requestOptions?: RolesClient.RequestOptions): Promise<core.Page<Management.Role, Management.ListOrganizationGroupRolesResponseContent>>;
+    /**
+     * Assign one or more roles to a specified group in the context of an organization.
+     *
+     * @param {string} organization_id - ID of the organization
+     * @param {string} group_id - ID of the group
+     * @param {Management.CreateOrganizationGroupRolesRequestContent} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.ConflictError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.organizations.groups.roles.create("organization_id", "group_id", {
+     *         roles: ["roles"]
+     *     })
+     */
+    create(organization_id: string, group_id: string, request: Management.CreateOrganizationGroupRolesRequestContent, requestOptions?: RolesClient.RequestOptions): core.HttpResponsePromise<void>;
+    private __create;
+    /**
+     * Unassign one or more roles from a specified group in the context of an organization.
+     *
+     * @param {string} organization_id - ID of the organization
+     * @param {string} group_id - ID of the group
+     * @param {Management.DeleteOrganizationGroupRolesRequestContent} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.organizations.groups.roles.delete("organization_id", "group_id", {
+     *         roles: ["roles"]
+     *     })
+     */
+    delete(organization_id: string, group_id: string, request: Management.DeleteOrganizationGroupRolesRequestContent, requestOptions?: RolesClient.RequestOptions): core.HttpResponsePromise<void>;
+    private __delete;
+}

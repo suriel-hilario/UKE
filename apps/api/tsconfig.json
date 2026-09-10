@@ -14,7 +14,6 @@
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "noStrictGenericChecks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

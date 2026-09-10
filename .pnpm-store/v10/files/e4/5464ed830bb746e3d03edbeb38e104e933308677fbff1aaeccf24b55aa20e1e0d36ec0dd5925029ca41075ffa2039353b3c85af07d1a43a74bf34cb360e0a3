@@ -1,0 +1,328 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../BaseClient.mjs";
+import * as core from "../../../../core/index.mjs";
+import * as Management from "../../../index.mjs";
+import { AuthenticationMethodsClient } from "../resources/authenticationMethods/client/Client.mjs";
+import { AuthenticatorsClient } from "../resources/authenticators/client/Client.mjs";
+import { ConnectedAccountsClient } from "../resources/connectedAccounts/client/Client.mjs";
+import { EffectivePermissionsClient } from "../resources/effectivePermissions/client/Client.mjs";
+import { EffectiveRolesClient } from "../resources/effectiveRoles/client/Client.mjs";
+import { EnrollmentsClient } from "../resources/enrollments/client/Client.mjs";
+import { GroupsClient } from "../resources/groups/client/Client.mjs";
+import { IdentitiesClient } from "../resources/identities/client/Client.mjs";
+import { LogsClient } from "../resources/logs/client/Client.mjs";
+import { MultifactorClient } from "../resources/multifactor/client/Client.mjs";
+import { OrganizationsClient } from "../resources/organizations/client/Client.mjs";
+import { PermissionsClient } from "../resources/permissions/client/Client.mjs";
+import { RefreshTokenClient } from "../resources/refreshToken/client/Client.mjs";
+import { RiskAssessmentsClient } from "../resources/riskAssessments/client/Client.mjs";
+import { RolesClient } from "../resources/roles/client/Client.mjs";
+import { SessionsClient } from "../resources/sessions/client/Client.mjs";
+export declare namespace UsersClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class UsersClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<UsersClient.Options>;
+    protected _authenticationMethods: AuthenticationMethodsClient | undefined;
+    protected _authenticators: AuthenticatorsClient | undefined;
+    protected _connectedAccounts: ConnectedAccountsClient | undefined;
+    protected _effectivePermissions: EffectivePermissionsClient | undefined;
+    protected _effectiveRoles: EffectiveRolesClient | undefined;
+    protected _enrollments: EnrollmentsClient | undefined;
+    protected _groups: GroupsClient | undefined;
+    protected _identities: IdentitiesClient | undefined;
+    protected _logs: LogsClient | undefined;
+    protected _multifactor: MultifactorClient | undefined;
+    protected _organizations: OrganizationsClient | undefined;
+    protected _permissions: PermissionsClient | undefined;
+    protected _riskAssessments: RiskAssessmentsClient | undefined;
+    protected _roles: RolesClient | undefined;
+    protected _refreshToken: RefreshTokenClient | undefined;
+    protected _sessions: SessionsClient | undefined;
+    constructor(options: UsersClient.Options);
+    get authenticationMethods(): AuthenticationMethodsClient;
+    get authenticators(): AuthenticatorsClient;
+    get connectedAccounts(): ConnectedAccountsClient;
+    get effectivePermissions(): EffectivePermissionsClient;
+    get effectiveRoles(): EffectiveRolesClient;
+    get enrollments(): EnrollmentsClient;
+    get groups(): GroupsClient;
+    get identities(): IdentitiesClient;
+    get logs(): LogsClient;
+    get multifactor(): MultifactorClient;
+    get organizations(): OrganizationsClient;
+    get permissions(): PermissionsClient;
+    get riskAssessments(): RiskAssessmentsClient;
+    get roles(): RolesClient;
+    get refreshToken(): RefreshTokenClient;
+    get sessions(): SessionsClient;
+    /**
+     * Retrieve details of users. It is possible to:
+     *
+     * - Specify a search criteria for users
+     * - Sort the users to be returned
+     * - Select the fields to be returned
+     * - Specify the number of users to retrieve per page and the page index
+     *
+     *
+     *
+     * The `q` query parameter can be used to get users that match the specified criteria [using query string syntax.](https://auth0.com/docs/users/search/v3/query-syntax)
+     *
+     * [Learn more about searching for users.](https://auth0.com/docs/users/search/v3)
+     *
+     * Read about [best practices](https://auth0.com/docs/users/search/best-practices) when working with the API endpoints for retrieving users.
+     *
+     *
+     *
+     * Auth0 limits the number of users you can return. If you exceed this threshold, please redefine your search, use the [export job](https://auth0.com/docs/api/management/v2#!/Jobs/post_users_exports), or the [User Import / Export](https://auth0.com/docs/extensions/user-import-export) extension.
+     *
+     * @param {Management.ListUsersRequestParameters} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.TooManyRequestsError}
+     * @throws {@link Management.ServiceUnavailableError}
+     *
+     * @example
+     *     await client.users.list({
+     *         page: 1,
+     *         per_page: 1,
+     *         include_totals: true,
+     *         sort: "sort",
+     *         connection: "connection",
+     *         fields: "fields",
+     *         include_fields: true,
+     *         q: "q",
+     *         search_engine: "v1",
+     *         primary_order: true
+     *     })
+     */
+    list(request?: Management.ListUsersRequestParameters, requestOptions?: UsersClient.RequestOptions): Promise<core.Page<Management.UserResponseSchema, Management.ListUsersOffsetPaginatedResponseContent>>;
+    /**
+     * Create a new user for a given [database](https://auth0.com/docs/connections/database) or [passwordless](https://auth0.com/docs/connections/passwordless) connection.
+     *
+     * Note: `connection` is required but other parameters such as `email` and `password` are dependent upon the type of connection.
+     *
+     * @param {Management.CreateUserRequestContent} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.ConflictError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.create({
+     *         connection: "connection"
+     *     })
+     */
+    create(request: Management.CreateUserRequestContent, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<Management.CreateUserResponseContent>;
+    private __create;
+    /**
+     * Find users by email. If Auth0 is the identity provider (idP), the email address associated with a user is saved in lower case, regardless of how you initially provided it.
+     *
+     * For example, if you register a user as JohnSmith@example.com, Auth0 saves the user's email as johnsmith@example.com.
+     *
+     * Therefore, when using this endpoint, make sure that you are searching for users via email addresses using the correct case.
+     *
+     * @param {Management.ListUsersByEmailRequestParameters} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.listUsersByEmail({
+     *         fields: "fields",
+     *         include_fields: true,
+     *         email: "email"
+     *     })
+     */
+    listUsersByEmail(request: Management.ListUsersByEmailRequestParameters, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<Management.UserResponseSchema[]>;
+    private __listUsersByEmail;
+    /**
+     * Retrieve user details. A list of fields to include or exclude may also be specified. For more information, see [Retrieve Users with the Get Users Endpoint](https://auth0.com/docs/manage-users/user-search/retrieve-users-with-get-users-endpoint).
+     *
+     * @param {string} id - ID of the user to retrieve.
+     * @param {Management.GetUserRequestParameters} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.get("id", {
+     *         fields: "fields",
+     *         include_fields: true
+     *     })
+     */
+    get(id: string, request?: Management.GetUserRequestParameters, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<Management.GetUserResponseContent>;
+    private __get;
+    /**
+     * Delete a user by user ID. This action cannot be undone. For Auth0 Dashboard instructions, see [Delete Users](https://auth0.com/docs/manage-users/user-accounts/delete-users).
+     *
+     * @param {string} id - ID of the user to delete.
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.delete("id")
+     */
+    delete(id: string, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<void>;
+    private __delete;
+    /**
+     * Update a user.
+     *
+     * These are the attributes that can be updated at the root level:
+     *
+     * - app_metadata
+     * - blocked
+     * - email
+     * - email_verified
+     * - family_name
+     * - given_name
+     * - name
+     * - nickname
+     * - password
+     * - phone_number
+     * - phone_verified
+     * - picture
+     * - username
+     * - user_metadata
+     * - verify_email
+     *
+     * Some considerations:
+     *
+     * - The properties of the new object will replace the old ones.
+     * - The metadata fields are an exception to this rule (`user_metadata` and `app_metadata`). These properties are merged instead of being replaced but be careful, the merge only occurs on the first level.
+     * - If you are updating `email`, `email_verified`, `phone_number`, `phone_verified`, `username` or `password` of a secondary identity, you need to specify the `connection` property too.
+     * - If you are updating `email` or `phone_number` you can specify, optionally, the `client_id` property.
+     * - Updating `email_verified` is not supported for enterprise and passwordless sms connections.
+     * - Updating the `blocked` to `false` does not affect the user's blocked state from an excessive amount of incorrectly provided credentials. Use the "Unblock a user" endpoint from the "User Blocks" API to change the user's state.
+     * - Supported attributes can be unset by supplying `null` as the value.
+     *
+     * **Updating a field (non-metadata property)**
+     *
+     * To mark the email address of a user as verified, the body to send should be:
+     *
+     * ```json
+     * { "email_verified": true }
+     * ```
+     *
+     * **Updating a user metadata root property**
+     *
+     * Let's assume that our test user has the following `user_metadata`:
+     *
+     * ```json
+     * { "user_metadata" : { "profileCode": 1479 } }
+     * ```
+     *
+     * To add the field `addresses` the body to send should be:
+     *
+     * ```json
+     * { "user_metadata" : { "addresses": {"work_address": "100 Industrial Way"} }}
+     * ```
+     *
+     * The modified object ends up with the following `user_metadata` property:
+     *
+     * ```json
+     * {
+     *   "user_metadata": {
+     *     "profileCode": 1479,
+     *     "addresses": { "work_address": "100 Industrial Way" }
+     *   }
+     * }
+     * ```
+     *
+     * **Updating an inner user metadata property**
+     *
+     * If there's existing user metadata to which we want to add  `"home_address": "742 Evergreen Terrace"` (using the `addresses` property) we should send the whole `addresses` object. Since this is a first-level object, the object will be merged in, but its own properties will not be. The body to send should be:
+     *
+     * ```json
+     * {
+     *   "user_metadata": {
+     *     "addresses": {
+     *       "work_address": "100 Industrial Way",
+     *       "home_address": "742 Evergreen Terrace"
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * The modified object ends up with the following `user_metadata` property:
+     *
+     * ```json
+     * {
+     *   "user_metadata": {
+     *     "profileCode": 1479,
+     *     "addresses": {
+     *       "work_address": "100 Industrial Way",
+     *       "home_address": "742 Evergreen Terrace"
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * @param {string} id - ID of the user to update.
+     * @param {Management.UpdateUserRequestContent} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.update("id")
+     */
+    update(id: string, request?: Management.UpdateUserRequestContent, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<Management.UpdateUserResponseContent>;
+    private __update;
+    /**
+     * Remove an existing multi-factor authentication (MFA) [recovery code](https://auth0.com/docs/secure/multi-factor-authentication/reset-user-mfa) and generate a new one. If a user cannot access the original device or account used for MFA enrollment, they can use a recovery code to authenticate.
+     *
+     * @param {string} id - ID of the user to regenerate a multi-factor authentication recovery code for.
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     *
+     * @example
+     *     await client.users.regenerateRecoveryCode("id")
+     */
+    regenerateRecoveryCode(id: string, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<Management.RegenerateUsersRecoveryCodeResponseContent>;
+    private __regenerateRecoveryCode;
+    /**
+     * Revokes selected resources related to a user (sessions, refresh tokens, ...).
+     *
+     * @param {string} id - ID of the user.
+     * @param {Management.RevokeUserAccessRequestContent} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.users.revokeAccess("id")
+     */
+    revokeAccess(id: string, request?: Management.RevokeUserAccessRequestContent, requestOptions?: UsersClient.RequestOptions): core.HttpResponsePromise<void>;
+    private __revokeAccess;
+}

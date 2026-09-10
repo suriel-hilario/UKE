@@ -1,0 +1,73 @@
+import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../BaseClient.mjs";
+import { type NormalizedClientOptionsWithAuth } from "../../../../../../BaseClient.mjs";
+import * as core from "../../../../../../core/index.mjs";
+import * as Management from "../../../../../index.mjs";
+export declare namespace RolesClient {
+    type Options = BaseClientOptions;
+    interface RequestOptions extends BaseRequestOptions {
+    }
+}
+export declare class RolesClient {
+    protected readonly _options: NormalizedClientOptionsWithAuth<RolesClient.Options>;
+    constructor(options: RolesClient.Options);
+    /**
+     * Lists the [roles](https://auth0.com/docs/manage-users/access-control/rbac) assigned to a group.
+     *
+     * @param {string} id - Unique identifier for the group (service-generated).
+     * @param {Management.ListGroupRolesRequestParameters} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.groups.roles.list("id", {
+     *         from: "from",
+     *         take: 1
+     *     })
+     */
+    list(id: string, request?: Management.ListGroupRolesRequestParameters, requestOptions?: RolesClient.RequestOptions): Promise<core.Page<Management.Role, Management.ListGroupRolesResponseContent>>;
+    /**
+     * Assign one or more [roles](https://auth0.com/docs/manage-users/access-control/rbac) to a specified group.
+     *
+     * @param {string} id - Unique identifier for the group (service-generated).
+     * @param {Management.CreateGroupRolesRequestParameters} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.groups.roles.create("id", {
+     *         roles: ["roles"]
+     *     })
+     */
+    create(id: string, request: Management.CreateGroupRolesRequestParameters, requestOptions?: RolesClient.RequestOptions): core.HttpResponsePromise<void>;
+    private __create;
+    /**
+     * Unassign one or more [roles](https://auth0.com/docs/manage-users/access-control/rbac) from a specified group.
+     *
+     * @param {string} id - Unique identifier for the group (service-generated).
+     * @param {Management.DeleteGroupRolesRequestContent} request
+     * @param {RolesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Management.BadRequestError}
+     * @throws {@link Management.UnauthorizedError}
+     * @throws {@link Management.ForbiddenError}
+     * @throws {@link Management.NotFoundError}
+     * @throws {@link Management.TooManyRequestsError}
+     *
+     * @example
+     *     await client.groups.roles.delete("id", {
+     *         roles: ["roles"]
+     *     })
+     */
+    delete(id: string, request: Management.DeleteGroupRolesRequestContent, requestOptions?: RolesClient.RequestOptions): core.HttpResponsePromise<void>;
+    private __delete;
+}
