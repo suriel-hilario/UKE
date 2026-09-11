@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate Prisma Client
+        run: pnpm --filter @workspace/api exec prisma generate
+
       - name: Typecheck API
         run: pnpm --filter @workspace/api exec tsc --noEmit
 
@@ -85,6 +88,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Start MinIO
+        # GitHub Actions service containers can't override a command, and the
+        # minio/minio image needs `server /data` passed explicitly — so MinIO
+        # runs as a plain `docker run` step instead of a `services:` entry.
+        run: |
+          docker run -d --name minio -p 9000:9000 \
+            -e MINIO_ROOT_USER=uke_minio \
+            -e MINIO_ROOT_PASSWORD=uke_minio_secret \
+            minio/minio server /data
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:9000/minio/health/live && break
+            sleep 1
+          done
+
       - name: Apply Prisma migrations
         run: pnpm --filter @workspace/api exec prisma migrate deploy
 
@@ -96,6 +113,10 @@ jobs:
 
       - name: Run e2e tests
         run: pnpm --filter @workspace/api test:e2e
+
+      - name: Stop MinIO
+        if: always()
+        run: docker rm -f minio
   build-web:
     name: Build web
     runs-on: ubuntu-latest
