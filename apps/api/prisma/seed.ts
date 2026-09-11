@@ -14,46 +14,48 @@ const ROLES: { rol: UsuarioRol; auth0Id: string; email: string; nombre: string }
 ]
 
 async function main() {
-  const temporada = await prisma.temporada.create({
-    data: {
-      nombre: '2026-27',
-      fecha_inicio: new Date('2026-09-01'),
-      fecha_fin: new Date('2027-06-30'),
-      estado: 'abierta',
-    },
-  })
-
-  for (const categoria of CATEGORIAS) {
-    await prisma.equipo.create({
+  let temporada = await prisma.temporada.findFirst({ where: { nombre: '2026-27' } })
+  if (!temporada) {
+    temporada = await prisma.temporada.create({
       data: {
-        temporada_id: temporada.id,
-        categoria,
-        nombre: `Equipo seed ${categoria}`,
-        minutos_por_periodo: categoria === 'f7' ? 25 : 40,
-        num_periodos: categoria === 'f7' ? 3 : 2,
-        dias_entrenamiento: [2, 4],
+        nombre: '2026-27',
+        fecha_inicio: new Date('2026-09-01'),
+        fecha_fin: new Date('2027-06-30'),
+        estado: 'abierta',
       },
     })
+  }
+
+  for (const categoria of CATEGORIAS) {
+    const existe = await prisma.equipo.findFirst({ where: { temporada_id: temporada.id, categoria } })
+    if (!existe) {
+      await prisma.equipo.create({
+        data: {
+          temporada_id: temporada.id,
+          categoria,
+          nombre: `Equipo seed ${categoria}`,
+          minutos_por_periodo: categoria === 'f7' ? 25 : 40,
+          num_periodos: categoria === 'f7' ? 3 : 2,
+          dias_entrenamiento: [2, 4],
+        },
+      })
+    }
   }
 
   for (const { rol, auth0Id, email, nombre } of ROLES) {
-    await prisma.usuario.create({
-      data: {
-        auth0_id: auth0Id,
-        nombre_visible: nombre,
-        email,
-        rol,
-      },
-    })
+    const existe = await prisma.usuario.findFirst({ where: { auth0_id: auth0Id } })
+    if (!existe) {
+      await prisma.usuario.create({
+        data: { auth0_id: auth0Id, nombre_visible: nombre, email, rol },
+      })
+    }
   }
 
-  // eslint-disable-next-line no-console
   console.log('Seed completo: 1 temporada, 3 equipos, 4 usuarios')
 }
 
 main()
   .catch((error) => {
-    // eslint-disable-next-line no-console
     console.error(error)
     process.exitCode = 1
   })
