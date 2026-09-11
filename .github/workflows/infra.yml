@@ -43,6 +43,9 @@ jobs:
 
       - name: Read droplet_ip output
         id: tf_output
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DO_SPACES_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_SECRET_KEY }}
         run: echo "droplet_ip=$(terraform output -raw droplet_ip)" >> "$GITHUB_OUTPUT"
 
       - name: Update DO_DROPLET_IP secret
