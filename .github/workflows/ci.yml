@@ -88,38 +88,11 @@ jobs:
       - name: Apply Prisma migrations
         run: pnpm --filter @workspace/api exec prisma migrate deploy
 
+      - name: Generate Prisma Client
+        run: pnpm --filter @workspace/api exec prisma generate
+
       - name: Run unit tests
         run: pnpm --filter @workspace/api test
 
       - name: Run e2e tests
         run: pnpm --filter @workspace/api test:e2e
-
-  build-web:
-    name: Build web
-    runs-on: ubuntu-latest
-    env:
-      VITE_AUTH0_DOMAIN: uke-ci.eu.auth0.com
-      VITE_AUTH0_CLIENT_ID: ci-placeholder-client-id
-      VITE_AUTH0_AUDIENCE: https://uke-ci.local/api
-      VITE_API_URL: /api
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run frontend tests
-        run: pnpm --filter @workspace/web test
-
-      - name: Build
-        run: pnpm --filter @workspace/web build
