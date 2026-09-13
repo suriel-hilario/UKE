@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 import { UserFormModal, UserFormValues } from './UserFormModal'
+import styles from './UsersPage.module.css'
 
 interface Usuario {
   id: string
@@ -14,6 +16,7 @@ interface Usuario {
 
 export function UsersPage() {
   const api = useAdminApi()
+  const lang = useLang()
   const [users, setUsers] = useState<Usuario[]>([])
   const [modalUser, setModalUser] = useState<Usuario | 'new' | null>(null)
 
@@ -41,21 +44,21 @@ export function UsersPage() {
   }
 
   async function handleDisable(user: Usuario) {
-    if (!window.confirm(`${t('deshabilitar')}: ${user.email}?`)) return
+    if (!window.confirm(`${t('deshabilitar', lang)}: ${user.email}?`)) return
     await api.del(`/admin/users/${user.id}`)
     await refresh()
   }
 
   return (
     <div>
-      <h2>{t('usuarios')}</h2>
-      <button onClick={() => setModalUser('new')}>{t('crear')}</button>
+      <h2>{t('usuarios', lang)}</h2>
+      <button onClick={() => setModalUser('new')}>{t('crear', lang)}</button>
       <table>
         <thead>
           <tr>
-            <th>{t('nombre')}</th>
-            <th>{t('email')}</th>
-            <th>{t('rol')}</th>
+            <th>{t('nombre', lang)}</th>
+            <th>{t('email', lang)}</th>
+            <th>{t('rol', lang)}</th>
             <th />
           </tr>
         </thead>
@@ -66,9 +69,11 @@ export function UsersPage() {
               <td>{user.email}</td>
               <td>{user.rol}</td>
               <td>
-                <button onClick={() => setModalUser(user)}>{t('editar')}</button>
-                <button onClick={() => handleResetPassword(user)}>{t('resetPassword')}</button>
-                <button onClick={() => handleDisable(user)}>{t('deshabilitar')}</button>
+                <button onClick={() => setModalUser(user)}>{t('editar', lang)}</button>
+                <button onClick={() => handleResetPassword(user)}>{t('resetPassword', lang)}</button>
+                <button className={styles.dangerButton} onClick={() => handleDisable(user)}>
+                  {t('deshabilitar', lang)}
+                </button>
               </td>
             </tr>
           ))}

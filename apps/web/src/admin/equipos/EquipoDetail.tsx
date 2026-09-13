@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 import { MiembrosTable, Miembro } from './MiembrosTable'
 import { ImportJugadores } from './ImportJugadores'
 
 export function EquipoDetail({ equipoId, onClose }: { equipoId: string; onClose: () => void }) {
+  const lang = useLang()
   const api = useAdminApi()
   const [miembros, setMiembros] = useState<Miembro[]>([])
 
@@ -19,7 +21,7 @@ export function EquipoDetail({ equipoId, onClose }: { equipoId: string; onClose:
 
   return (
     <div>
-      <button onClick={onClose}>{t('cancelar')}</button>
+      <button onClick={onClose}>{t('cancelar', lang)}</button>
       <MiembrosTable equipoId={equipoId} miembros={miembros} onChange={refresh} />
       <ImportJugadores equipoId={equipoId} onImported={refresh} />
     </div>

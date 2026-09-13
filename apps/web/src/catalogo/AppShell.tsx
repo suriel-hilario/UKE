@@ -7,7 +7,7 @@ import { EquipoCard, EquipoResumen } from './EquipoCard'
 import { t as tPanel } from '../panel/i18n'
 import styles from './AppShell.module.css'
 import { EmptyState } from '../styles/EmptyState'
-import ukeLogo from '../assets/uke-logo.png'
+import ukeLogo from '../assets/escudo-uke.png'
 
 interface Me {
   id: string

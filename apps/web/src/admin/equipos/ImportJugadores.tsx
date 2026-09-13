@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 
 interface Preview {
   valid: { row: number; nombre: string; fecha_incorporacion: string }[]
@@ -9,6 +10,7 @@ interface Preview {
 
 export function ImportJugadores({ equipoId, onImported }: { equipoId: string; onImported: () => void }) {
   const api = useAdminApi()
+  const lang = useLang()
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<Preview | null>(null)
 
@@ -32,7 +34,7 @@ export function ImportJugadores({ equipoId, onImported }: { equipoId: string; on
 
   return (
     <div>
-      <h3>{t('importarJugadoreak')}</h3>
+      <h3>{t('importarJugadoreak', lang)}</h3>
       <form onSubmit={handlePreview}>
         <input
           type="file"
@@ -40,7 +42,7 @@ export function ImportJugadores({ equipoId, onImported }: { equipoId: string; on
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />
         <button type="submit" disabled={!file}>
-          {t('crear')}
+          {t('crear', lang)}
         </button>
       </form>
 
@@ -49,9 +51,9 @@ export function ImportJugadores({ equipoId, onImported }: { equipoId: string; on
           <table>
             <thead>
               <tr>
-                <th>{t('fila')}</th>
-                <th>{t('nombre')}</th>
-                <th>{t('fechaIncorporacion')}</th>
+                <th>{t('fila', lang)}</th>
+                <th>{t('nombre', lang)}</th>
+                <th>{t('fechaIncorporacion', lang)}</th>
               </tr>
             </thead>
             <tbody>
@@ -67,9 +69,9 @@ export function ImportJugadores({ equipoId, onImported }: { equipoId: string; on
           <table>
             <thead>
               <tr>
-                <th>{t('fila')}</th>
-                <th>{t('campo')}</th>
-                <th>{t('error')}</th>
+                <th>{t('fila', lang)}</th>
+                <th>{t('campo', lang)}</th>
+                <th>{t('error', lang)}</th>
               </tr>
             </thead>
             <tbody>
@@ -83,7 +85,7 @@ export function ImportJugadores({ equipoId, onImported }: { equipoId: string; on
             </tbody>
           </table>
           <button onClick={handleConfirm} disabled={preview.valid.length === 0}>
-            {t('confirmar')}
+            {t('confirmar', lang)}
           </button>
         </div>
       )}

@@ -1,16 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 import { AdminLayout } from './AdminLayout'
 import { useAuth } from '../auth/useAuth'
 
 vi.mock('../auth/useAuth', () => ({ useAuth: vi.fn() }))
+vi.mock('@auth0/auth0-react', () => ({ useAuth0: vi.fn() }))
 
 const mockUseAuth = vi.mocked(useAuth)
+const mockUseAuth0 = vi.mocked(useAuth0)
 
 describe('AdminLayout', () => {
   beforeEach(() => {
     mockUseAuth.mockReset()
+    mockUseAuth0.mockReset()
+    mockUseAuth0.mockReturnValue({
+      getAccessTokenSilently: vi.fn().mockResolvedValue('token'),
+    } as unknown as ReturnType<typeof useAuth0>)
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ idioma: 'eu' }),
+    }) as unknown as typeof fetch
   })
 
   it('shows the admin-only links and Histórico for admin', () => {

@@ -6,11 +6,26 @@
 
 .nav {
   display: flex;
+  align-items: center;
   gap: var(--space-1);
   overflow-x: auto;
   padding: var(--space-2) var(--space-3);
   background: var(--color-surface-topbar);
   border-bottom: 1px solid var(--color-border);
+}
+
+.navLogo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-right: var(--space-2);
+}
+
+.langSelect {
+  min-height: var(--touch-target-min);
+  margin-right: var(--space-2);
+  border-radius: var(--radius-sm);
 }
 
 .nav a {
@@ -21,6 +36,11 @@
   color: var(--color-brand-contrast);
   white-space: nowrap;
   border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.nav a:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .nav a.active {
@@ -48,5 +68,10 @@
 
   .nav a {
     justify-content: flex-start;
+  }
+
+  .navLogo {
+    margin-right: 0;
+    margin-bottom: var(--space-2);
   }
 }

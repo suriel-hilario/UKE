@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 
 export interface UserFormValues {
   email: string
@@ -25,6 +26,7 @@ const ROLES = ['admin', 'director', 'coordinador', 'entrenador']
 
 export function UserFormModal({ initial, onSave, onClose }: Props) {
   const api = useAdminApi()
+  const lang = useLang()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [equipos, setEquipos] = useState<Equipo[]>([])
   const [values, setValues] = useState<UserFormValues>({
@@ -50,7 +52,7 @@ export function UserFormModal({ initial, onSave, onClose }: Props) {
     <dialog ref={dialogRef} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <label>
-          {t('email')}
+          {t('email', lang)}
           <input
             type="email"
             required
@@ -59,7 +61,7 @@ export function UserFormModal({ initial, onSave, onClose }: Props) {
           />
         </label>
         <label>
-          {t('nombre')}
+          {t('nombre', lang)}
           <input
             required
             value={values.nombre_visible}
@@ -67,7 +69,7 @@ export function UserFormModal({ initial, onSave, onClose }: Props) {
           />
         </label>
         <label>
-          {t('rol')}
+          {t('rol', lang)}
           <select value={values.rol} onChange={(e) => setValues({ ...values, rol: e.target.value })}>
             {ROLES.map((rol) => (
               <option key={rol} value={rol}>
@@ -78,7 +80,7 @@ export function UserFormModal({ initial, onSave, onClose }: Props) {
         </label>
         {values.rol === 'entrenador' && (
           <fieldset>
-            <legend>{t('equipos')}</legend>
+            <legend>{t('equipos', lang)}</legend>
             {equipos.map((equipo) => (
               <label key={equipo.id}>
                 <input
@@ -99,9 +101,9 @@ export function UserFormModal({ initial, onSave, onClose }: Props) {
             ))}
           </fieldset>
         )}
-        <button type="submit">{t('guardar')}</button>
+        <button type="submit">{t('guardar', lang)}</button>
         <button type="button" onClick={() => dialogRef.current?.close()}>
-          {t('cancelar')}
+          {t('cancelar', lang)}
         </button>
       </form>
     </dialog>

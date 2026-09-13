@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAdminApi } from '../api'
 import { t, DictKey } from '../i18n'
+import { useLang } from '../LangContext'
 import { EquipoDetail } from './EquipoDetail'
 
 interface Equipo {
@@ -28,6 +29,7 @@ const DIA_KEYS: Record<number, DictKey> = {
 
 export function EquiposPage() {
   const api = useAdminApi()
+  const lang = useLang()
   const [temporadas, setTemporadas] = useState<Temporada[]>([])
   const [temporadaId, setTemporadaId] = useState<string>('')
   const [equipos, setEquipos] = useState<Equipo[]>([])
@@ -77,7 +79,7 @@ export function EquiposPage() {
 
   return (
     <div>
-      <h2>{t('equipos')}</h2>
+      <h2>{t('equipos', lang)}</h2>
       <select value={temporadaId} onChange={(e) => setTemporadaId(e.target.value)}>
         {temporadas.map((temporada) => (
           <option key={temporada.id} value={temporada.id}>
@@ -88,7 +90,7 @@ export function EquiposPage() {
 
       <form onSubmit={handleCreate}>
         <input
-          placeholder={t('nombre')}
+          placeholder={t('nombre', lang)}
           required
           value={form.nombre}
           onChange={(e) => setForm({ ...form, nombre: e.target.value })}
@@ -99,12 +101,12 @@ export function EquiposPage() {
           <option value="f11">f11</option>
         </select>
         <input
-          placeholder={t('color')}
+          placeholder={t('color', lang)}
           value={form.color}
           onChange={(e) => setForm({ ...form, color: e.target.value })}
         />
         <input
-          placeholder={t('icono')}
+          placeholder={t('icono', lang)}
           value={form.icono}
           onChange={(e) => setForm({ ...form, icono: e.target.value })}
         />
@@ -125,17 +127,17 @@ export function EquiposPage() {
               checked={form.dias_entrenamiento.includes(dia)}
               onChange={() => toggleDia(dia)}
             />
-            {t(DIA_KEYS[dia])}
+            {t(DIA_KEYS[dia], lang)}
           </label>
         ))}
-        <button type="submit">{t('crear')}</button>
+        <button type="submit">{t('crear', lang)}</button>
       </form>
 
       <table>
         <thead>
           <tr>
-            <th>{t('nombre')}</th>
-            <th>{t('categoria')}</th>
+            <th>{t('nombre', lang)}</th>
+            <th>{t('categoria', lang)}</th>
             <th />
           </tr>
         </thead>
@@ -145,7 +147,7 @@ export function EquiposPage() {
               <td>{equipo.nombre}</td>
               <td>{equipo.categoria}</td>
               <td>
-                <button onClick={() => setSelected(equipo.id)}>{t('editar')}</button>
+                <button onClick={() => setSelected(equipo.id)}>{t('editar', lang)}</button>
               </td>
             </tr>
           ))}

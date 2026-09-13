@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 import { TemporadaDetail } from './TemporadaDetail'
 
 interface Temporada {
@@ -13,6 +14,7 @@ interface Temporada {
 
 export function TemporadasPage() {
   const api = useAdminApi()
+  const lang = useLang()
   const [temporadas, setTemporadas] = useState<Temporada[]>([])
   const [selected, setSelected] = useState<string | null>(null)
   const [form, setForm] = useState({ nombre: '', fecha_inicio: '', fecha_fin: '' })
@@ -34,17 +36,17 @@ export function TemporadasPage() {
   }
 
   async function handleClose(id: string) {
-    if (!window.confirm(t('cerrarTemporadaConfirm'))) return
+    if (!window.confirm(t('cerrarTemporadaConfirm', lang))) return
     await api.post(`/admin/temporadas/${id}/close`)
     await refresh()
   }
 
   return (
     <div>
-      <h2>{t('temporadas')}</h2>
+      <h2>{t('temporadas', lang)}</h2>
       <form onSubmit={handleCreate}>
         <input
-          placeholder={t('nombre')}
+          placeholder={t('nombre', lang)}
           required
           value={form.nombre}
           onChange={(e) => setForm({ ...form, nombre: e.target.value })}
@@ -61,14 +63,14 @@ export function TemporadasPage() {
           value={form.fecha_fin}
           onChange={(e) => setForm({ ...form, fecha_fin: e.target.value })}
         />
-        <button type="submit">{t('crear')}</button>
+        <button type="submit">{t('crear', lang)}</button>
       </form>
 
       <table>
         <thead>
           <tr>
-            <th>{t('nombre')}</th>
-            <th>{t('estado')}</th>
+            <th>{t('nombre', lang)}</th>
+            <th>{t('estado', lang)}</th>
             <th />
           </tr>
         </thead>
@@ -77,12 +79,12 @@ export function TemporadasPage() {
             <tr key={temporada.id}>
               <td>{temporada.nombre}</td>
               <td>
-                <span>{temporada.estado === 'abierta' ? t('abierta') : t('cerrada')}</span>
+                <span>{temporada.estado === 'abierta' ? t('abierta', lang) : t('cerrada', lang)}</span>
               </td>
               <td>
-                <button onClick={() => setSelected(temporada.id)}>{t('editar')}</button>
+                <button onClick={() => setSelected(temporada.id)}>{t('editar', lang)}</button>
                 {temporada.estado === 'abierta' && (
-                  <button onClick={() => handleClose(temporada.id)}>{t('cerrarTemporada')}</button>
+                  <button onClick={() => handleClose(temporada.id)}>{t('cerrarTemporada', lang)}</button>
                 )}
               </td>
             </tr>

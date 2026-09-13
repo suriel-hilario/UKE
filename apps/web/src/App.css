@@ -1,3 +1,12 @@
+h1,
+h2,
+h3 {
+  font-family: var(--font-family-condensed);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-team-verde);
+  letter-spacing: 0.02em;
+}
+
 a {
   color: var(--color-brand);
   text-decoration: none;
@@ -9,6 +18,56 @@ a:hover {
 button {
   font-family: inherit;
   cursor: pointer;
+  min-height: var(--touch-target-min);
+  padding: 0 var(--space-4);
+  border: 1px solid rgba(39, 174, 96, 0.35);
+  border-radius: var(--radius-md);
+  background: var(--color-success-bg);
+  color: var(--color-team-verde);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: background var(--transition-fast);
+}
+
+button:hover:not(:disabled) {
+  background: rgba(39, 174, 96, 0.32);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+thead th {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 2px solid var(--color-border);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+tbody tr:hover {
+  background: rgba(39, 174, 96, 0.06);
 }
 
 button:focus-visible,

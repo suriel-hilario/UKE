@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 
 interface TemporadaHistorico {
   id: string
@@ -17,6 +18,7 @@ interface TemporadaHistorico {
 export function HistoricoPage() {
   const api = useAdminApi()
   const navigate = useNavigate()
+  const lang = useLang()
   const [temporadas, setTemporadas] = useState<TemporadaHistorico[]>([])
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function HistoricoPage() {
 
   return (
     <div>
-      <h2>{t('historico')}</h2>
+      <h2>{t('historico', lang)}</h2>
       <ul>
         {temporadas.map((temporada) => (
           <li key={temporada.id}>

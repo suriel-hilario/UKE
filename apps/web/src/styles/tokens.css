@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Barlow:wght@400;500;600&display=swap');
+
 :root {
   /* Brand — UKE-Docs/UKE_F7_Entrenatzaileak.html, UKE_F7_Asistentziak.html, UKE_Eskola_Asistentziak.html */
   --color-brand: #1a5228;
@@ -66,7 +68,8 @@
   --color-overlay-backdrop: rgba(0, 0, 0, 0.6);
 
   /* Typography */
-  --font-family: Arial, sans-serif;
+  --font-family: 'Barlow', Arial, sans-serif;
+  --font-family-condensed: 'Barlow Condensed', Arial, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;

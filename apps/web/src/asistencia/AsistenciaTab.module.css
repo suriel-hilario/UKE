@@ -17,6 +17,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-card);
+  color: var(--color-text-primary);
   white-space: nowrap;
 }
 
@@ -39,6 +40,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-card);
+  color: var(--color-text-primary);
 }
 
 .tableWrap {

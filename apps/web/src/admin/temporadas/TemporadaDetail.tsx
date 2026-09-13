@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 
 interface Bloque {
   id: string
@@ -22,6 +23,7 @@ export function TemporadaDetail({
   onClose: () => void
 }) {
   const api = useAdminApi()
+  const lang = useLang()
   const [bloques, setBloques] = useState<Bloque[]>([])
   const [festivos, setFestivos] = useState<Festivo[]>([])
   const [bloqueForm, setBloqueForm] = useState({ tipo: 'unico', fecha_activacion: '' })
@@ -58,9 +60,9 @@ export function TemporadaDetail({
 
   return (
     <div>
-      <button onClick={onClose}>{t('cancelar')}</button>
+      <button onClick={onClose}>{t('cancelar', lang)}</button>
 
-      <h3>{t('bloques')}</h3>
+      <h3>{t('bloques', lang)}</h3>
       <ul>
         {bloques.map((bloque) => (
           <li key={bloque.id}>
@@ -83,10 +85,10 @@ export function TemporadaDetail({
           value={bloqueForm.fecha_activacion}
           onChange={(e) => setBloqueForm({ ...bloqueForm, fecha_activacion: e.target.value })}
         />
-        <button type="submit">{t('crear')}</button>
+        <button type="submit">{t('crear', lang)}</button>
       </form>
 
-      <h3>{t('festivos')}</h3>
+      <h3>{t('festivos', lang)}</h3>
       <ul>
         {festivos.map((festivo) => (
           <li key={festivo.id}>
@@ -103,11 +105,11 @@ export function TemporadaDetail({
           onChange={(e) => setFestivoForm({ ...festivoForm, fecha: e.target.value })}
         />
         <input
-          placeholder={t('descripcion')}
+          placeholder={t('descripcion', lang)}
           value={festivoForm.descripcion}
           onChange={(e) => setFestivoForm({ ...festivoForm, descripcion: e.target.value })}
         />
-        <button type="submit">{t('crear')}</button>
+        <button type="submit">{t('crear', lang)}</button>
       </form>
     </div>
   )

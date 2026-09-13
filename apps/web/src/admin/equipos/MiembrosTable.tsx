@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
+import { useLang } from '../LangContext'
 
 export interface Miembro {
   id: string
@@ -21,6 +22,7 @@ export function MiembrosTable({
   onChange: () => void
 }) {
   const api = useAdminApi()
+  const lang = useLang()
   const [dragId, setDragId] = useState<string | null>(null)
 
   async function handleDrop(targetId: string) {
@@ -42,7 +44,7 @@ export function MiembrosTable({
   }
 
   async function handleBaja(miembroId: string) {
-    const fecha = window.prompt(t('fechaBaja'))
+    const fecha = window.prompt(t('fechaBaja', lang))
     if (!fecha) return
     await api.patch(`/admin/equipos/${equipoId}/miembros/${miembroId}`, { fecha_baja: fecha })
     onChange()
@@ -52,11 +54,11 @@ export function MiembrosTable({
     <table>
       <thead>
         <tr>
-          <th>{t('nombre')}</th>
-          <th>{t('grupo')}</th>
-          <th>{t('fechaIncorporacion')}</th>
-          <th>{t('fechaBaja')}</th>
-          <th>{t('orden')}</th>
+          <th>{t('nombre', lang)}</th>
+          <th>{t('grupo', lang)}</th>
+          <th>{t('fechaIncorporacion', lang)}</th>
+          <th>{t('fechaBaja', lang)}</th>
+          <th>{t('orden', lang)}</th>
           <th />
         </tr>
       </thead>
@@ -74,7 +76,7 @@ export function MiembrosTable({
             <td>{miembro.fecha_incorporacion}</td>
             <td>{miembro.fecha_baja ?? '—'}</td>
             <td>{miembro.orden}</td>
-            <td>{!miembro.fecha_baja && <button onClick={() => handleBaja(miembro.id)}>{t('fechaBaja')}</button>}</td>
+            <td>{!miembro.fecha_baja && <button onClick={() => handleBaja(miembro.id)}>{t('fechaBaja', lang)}</button>}</td>
           </tr>
         ))}
       </tbody>
