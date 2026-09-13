@@ -230,19 +230,23 @@ export function AsistenciaEntrenadoresTab({
                 miembro.registros.length === 0 ? null : Math.round((presentes / miembro.registros.length) * 1000) / 10
               return (
                 <tr key={miembro.id}>
-                  <td>
-                    {miembro.persona.foto_url ? (
-                      <img src={miembro.persona.foto_url} alt="" width={24} height={24} />
-                    ) : (
-                      <span aria-hidden>
-                        {miembro.persona.nombre
-                          .split(' ')
-                          .slice(0, 2)
-                          .map((p) => p[0]?.toUpperCase())
-                          .join('')}
-                      </span>
-                    )}
-                    <button onClick={() => setFichaMiembroId(miembro.id)}>{miembro.persona.nombre}</button>
+                  <td className={styles.playerCell}>
+                    <span className={styles.playerAvatar}>
+                      {miembro.persona.foto_url ? (
+                        <img src={miembro.persona.foto_url} alt="" width={24} height={24} />
+                      ) : (
+                        <span aria-hidden>
+                          {miembro.persona.nombre
+                            .split(' ')
+                            .slice(0, 2)
+                            .map((p) => p[0]?.toUpperCase())
+                            .join('')}
+                        </span>
+                      )}
+                    </span>
+                    <button className={styles.playerName} onClick={() => setFichaMiembroId(miembro.id)}>
+                      {miembro.persona.nombre}
+                    </button>
                   </td>
                   {data.sesiones.map((sesion) => {
                     const registro = miembro.registros.find((r) => r.sesion_id === sesion.id)

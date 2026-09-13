@@ -53,32 +53,34 @@ export function UsersPage() {
     <div>
       <h2>{t('usuarios', lang)}</h2>
       <button onClick={() => setModalUser('new')}>{t('crear', lang)}</button>
-      <table>
-        <thead>
-          <tr>
-            <th>{t('nombre', lang)}</th>
-            <th>{t('email', lang)}</th>
-            <th>{t('rol', lang)}</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.nombre_visible}</td>
-              <td>{user.email}</td>
-              <td>{user.rol}</td>
-              <td>
-                <button onClick={() => setModalUser(user)}>{t('editar', lang)}</button>
-                <button onClick={() => handleResetPassword(user)}>{t('resetPassword', lang)}</button>
-                <button className={styles.dangerButton} onClick={() => handleDisable(user)}>
-                  {t('deshabilitar', lang)}
-                </button>
-              </td>
+      <div className={styles.tableWrap}>
+        <table>
+          <thead>
+            <tr>
+              <th>{t('nombre', lang)}</th>
+              <th>{t('email', lang)}</th>
+              <th>{t('rol', lang)}</th>
+              <th />
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.nombre_visible}</td>
+                <td>{user.email}</td>
+                <td>{user.rol}</td>
+                <td className={styles.actionsCell}>
+                  <button onClick={() => setModalUser(user)}>{t('editar', lang)}</button>
+                  <button onClick={() => handleResetPassword(user)}>{t('resetPassword', lang)}</button>
+                  <button className={styles.dangerButton} onClick={() => handleDisable(user)}>
+                    {t('deshabilitar', lang)}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {modalUser && (
         <UserFormModal

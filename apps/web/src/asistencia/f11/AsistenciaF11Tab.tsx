@@ -307,13 +307,17 @@ export function AsistenciaF11Tab({
                       <td>
                         <PctPill pct={miembro.porcentaje_mes} />
                       </td>
-                      <td>
-                        {miembro.persona.foto_url ? (
-                          <img src={miembro.persona.foto_url} alt="" width={24} height={24} />
-                        ) : (
-                          <span aria-hidden>{miembro.persona.nombre.slice(0, 2).toUpperCase()}</span>
-                        )}
-                        <button onClick={() => setFichaMiembroId(miembro.id)}>{miembro.persona.nombre}</button>
+                      <td className={styles.playerCell}>
+                        <span className={styles.playerAvatar}>
+                          {miembro.persona.foto_url ? (
+                            <img src={miembro.persona.foto_url} alt="" width={24} height={24} />
+                          ) : (
+                            <span aria-hidden>{miembro.persona.nombre.slice(0, 2).toUpperCase()}</span>
+                          )}
+                        </span>
+                        <button className={styles.playerName} onClick={() => setFichaMiembroId(miembro.id)}>
+                          {miembro.persona.nombre}
+                        </button>
                       </td>
                       {sesiones.map((sesion) => {
                         const registro = miembro.registros.find((r) => r.sesion_id === sesion.id)

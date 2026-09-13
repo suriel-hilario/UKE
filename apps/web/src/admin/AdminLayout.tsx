@@ -16,6 +16,7 @@ export function AdminLayout() {
   const api = useAdminApi()
   const esAdmin = user?.rol === 'admin'
   const [lang, setLang] = useState<Lang>('eu')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     api.get('/auth/me').then((data: Me) => {
@@ -29,11 +30,29 @@ export function AdminLayout() {
     await api.patch('/auth/me/idioma', { idioma: next })
   }
 
+  function closeMenu() {
+    setMenuOpen(false)
+  }
+
   return (
     <LangContext.Provider value={lang}>
       <div className={styles.layout}>
-        <nav className={styles.nav}>
-          <img className={styles.navLogo} src={ukeLogo} alt="UKE" />
+        <header className={styles.topbar}>
+          <button className={styles.hamburger} aria-label="ireki-menua" onClick={() => setMenuOpen(true)}>
+            ☰
+          </button>
+          <img className={styles.topbarLogo} src={ukeLogo} alt="UKE" />
+        </header>
+
+        {menuOpen && <div className={styles.overlay} onClick={closeMenu} />}
+
+        <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
+          <div className={styles.navHeader}>
+            <img className={styles.navLogo} src={ukeLogo} alt="UKE" />
+            <button className={styles.closeButton} aria-label="itxi-menua" onClick={closeMenu}>
+              ✕
+            </button>
+          </div>
           <select
             className={styles.langSelect}
             value={lang}
@@ -44,18 +63,34 @@ export function AdminLayout() {
           </select>
           {esAdmin && (
             <>
-              <NavLink to="/admin/usuarios" className={({ isActive }) => (isActive ? styles.active : undefined)}>
+              <NavLink
+                to="/admin/usuarios"
+                className={({ isActive }) => (isActive ? styles.active : undefined)}
+                onClick={closeMenu}
+              >
                 {t('usuarios', lang)}
               </NavLink>
-              <NavLink to="/admin/temporadas" className={({ isActive }) => (isActive ? styles.active : undefined)}>
+              <NavLink
+                to="/admin/temporadas"
+                className={({ isActive }) => (isActive ? styles.active : undefined)}
+                onClick={closeMenu}
+              >
                 {t('temporadas', lang)}
               </NavLink>
-              <NavLink to="/admin/equipos" className={({ isActive }) => (isActive ? styles.active : undefined)}>
+              <NavLink
+                to="/admin/equipos"
+                className={({ isActive }) => (isActive ? styles.active : undefined)}
+                onClick={closeMenu}
+              >
                 {t('equipos', lang)}
               </NavLink>
             </>
           )}
-          <NavLink to="/admin/historico" className={({ isActive }) => (isActive ? styles.active : undefined)}>
+          <NavLink
+            to="/admin/historico"
+            className={({ isActive }) => (isActive ? styles.active : undefined)}
+            onClick={closeMenu}
+          >
             {t('historico', lang)}
           </NavLink>
         </nav>

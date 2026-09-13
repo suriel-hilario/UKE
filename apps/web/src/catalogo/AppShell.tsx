@@ -30,6 +30,7 @@ export function AppShell() {
   const temporadaIdParam = searchParams.get('temporada_id')
   const tienePanel = user?.rol === 'director' || user?.rol === 'coordinador'
   const [lang, setLang] = useState<Lang>('eu')
+  const [menuOpen, setMenuOpen] = useState(false)
   const [me, setMe] = useState<Me | null>(null)
   const [temporadas, setTemporadas] = useState<Temporada[]>([])
   const [temporadaId, setTemporadaId] = useState<string>(temporadaIdParam ?? '')
@@ -70,32 +71,39 @@ export function AppShell() {
   return (
     <div className={styles.shell}>
       <header className={styles.topbar}>
+        <button className={styles.hamburger} aria-label="ireki-menua" onClick={() => setMenuOpen(true)}>
+          ☰
+        </button>
         <span className={styles.brand}>
           <img className={styles.brandLogo} src={ukeLogo} alt="UKE" />
           UKE
         </span>
-        <select
-          className={styles.langSelect}
-          value={lang}
-          onChange={(e) => handleLangChange(e.target.value as Lang)}
-        >
-          <option value="eu">EU</option>
-          <option value="es">ES</option>
-        </select>
-        {me && (
-          <span className={styles.userBadge}>
-            {me.nombre_visible ?? me.email} ({me.rol})
-          </span>
-        )}
-        {tienePanel && (
-          <Link className={styles.panelLink} to="/panel">
-            {tPanel('panel', lang)}
-          </Link>
-        )}
-        <button className={styles.logoutButton} onClick={() => logout()}>
-          {t('salir', lang)}
-        </button>
+        <div className={styles.topbarActions}>
+          <select
+            className={styles.langSelect}
+            value={lang}
+            onChange={(e) => handleLangChange(e.target.value as Lang)}
+          >
+            <option value="eu">EU</option>
+            <option value="es">ES</option>
+          </select>
+          {me && (
+            <span className={styles.userBadge}>
+              {me.nombre_visible ?? me.email} ({me.rol})
+            </span>
+          )}
+          {tienePanel && (
+            <Link className={styles.panelLink} to="/panel">
+              {tPanel('panel', lang)}
+            </Link>
+          )}
+          <button className={styles.logoutButton} onClick={() => logout()}>
+            {t('salir', lang)}
+          </button>
+        </div>
       </header>
+
+      {menuOpen && <div className={styles.overlay} onClick={() => setMenuOpen(false)} />}
 
       {temporadas.length > 0 && !temporadaId && (
         <select
@@ -116,17 +124,31 @@ export function AppShell() {
       )}
 
       <div className={styles.body}>
-        <nav className={styles.nav}>
+        <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
+          <div className={styles.drawerHeader}>
+            <img className={styles.drawerLogo} src={ukeLogo} alt="UKE" />
+            <button className={styles.closeButton} aria-label="itxi-menua" onClick={() => setMenuOpen(false)}>
+              ✕
+            </button>
+          </div>
           {categorias.map((cat) => (
             <button
               key={cat}
               className={styles.navButton}
-              onClick={() => setCategoria(cat)}
+              onClick={() => {
+                setCategoria(cat)
+                setMenuOpen(false)
+              }}
               disabled={cat === categoria}
             >
               {cat}
             </button>
           ))}
+          {tienePanel && (
+            <Link className={styles.drawerPanelLink} to="/panel" onClick={() => setMenuOpen(false)}>
+              {tPanel('panel', lang)}
+            </Link>
+          )}
         </nav>
 
         <main className={styles.main}>

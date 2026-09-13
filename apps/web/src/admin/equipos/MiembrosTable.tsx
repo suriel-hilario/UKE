@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAdminApi } from '../api'
 import { t } from '../i18n'
 import { useLang } from '../LangContext'
+import styles from './MiembrosTable.module.css'
 
 export interface Miembro {
   id: string
@@ -51,35 +52,37 @@ export function MiembrosTable({
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>{t('nombre', lang)}</th>
-          <th>{t('grupo', lang)}</th>
-          <th>{t('fechaIncorporacion', lang)}</th>
-          <th>{t('fechaBaja', lang)}</th>
-          <th>{t('orden', lang)}</th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        {miembros.map((miembro) => (
-          <tr
-            key={miembro.id}
-            draggable
-            onDragStart={() => setDragId(miembro.id)}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={() => handleDrop(miembro.id)}
-          >
-            <td>{miembro.persona.nombre}</td>
-            <td>{miembro.grupo}</td>
-            <td>{miembro.fecha_incorporacion}</td>
-            <td>{miembro.fecha_baja ?? '—'}</td>
-            <td>{miembro.orden}</td>
-            <td>{!miembro.fecha_baja && <button onClick={() => handleBaja(miembro.id)}>{t('fechaBaja', lang)}</button>}</td>
+    <div className={styles.tableWrap}>
+      <table>
+        <thead>
+          <tr>
+            <th>{t('nombre', lang)}</th>
+            <th>{t('grupo', lang)}</th>
+            <th>{t('fechaIncorporacion', lang)}</th>
+            <th>{t('fechaBaja', lang)}</th>
+            <th>{t('orden', lang)}</th>
+            <th />
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {miembros.map((miembro) => (
+            <tr
+              key={miembro.id}
+              draggable
+              onDragStart={() => setDragId(miembro.id)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => handleDrop(miembro.id)}
+            >
+              <td>{miembro.persona.nombre}</td>
+              <td>{miembro.grupo}</td>
+              <td>{miembro.fecha_incorporacion}</td>
+              <td>{miembro.fecha_baja ?? '—'}</td>
+              <td>{miembro.orden}</td>
+              <td>{!miembro.fecha_baja && <button onClick={() => handleBaja(miembro.id)}>{t('fechaBaja', lang)}</button>}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

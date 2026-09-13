@@ -1,3 +1,13 @@
+.tableWrap {
+  overflow-x: auto;
+}
+
+.actionsCell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
 .dangerButton {
   background: var(--color-danger-bg);
   color: var(--color-danger);

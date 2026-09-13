@@ -1,6 +1,7 @@
 import { useEquipo } from './EquipoContext'
 import { Miembro } from './EquipoContext'
 import { t } from './i18n'
+import styles from './PlantillaTab.module.css'
 
 const GRUPOS: { key: Miembro['grupo']; labelKey: 'conFicha' | 'sinFicha' | 'entrenadores' }[] = [
   { key: 'con_ficha', labelKey: 'conFicha' },
@@ -32,14 +33,16 @@ export function PlantillaTab() {
         return (
           <section key={key}>
             <h3>{t(labelKey)}</h3>
-            <ul>
+            <ul className={styles.list}>
               {miembros.map((miembro) => (
-                <li key={miembro.id}>
-                  {miembro.persona.foto_url ? (
-                    <img src={miembro.persona.foto_url} alt="" width={32} height={32} />
-                  ) : (
-                    <span aria-hidden>{iniciales(miembro.persona.nombre)}</span>
-                  )}
+                <li key={miembro.id} className={styles.item}>
+                  <span className={styles.avatar}>
+                    {miembro.persona.foto_url ? (
+                      <img src={miembro.persona.foto_url} alt="" width={32} height={32} />
+                    ) : (
+                      <span aria-hidden>{iniciales(miembro.persona.nombre)}</span>
+                    )}
+                  </span>
                   <strong>{miembro.persona.nombre}</strong>
                   {miembro.persona.alias && <span> ({miembro.persona.alias})</span>}
                   {miembro.rol_entrenador && <span> — {miembro.rol_entrenador}</span>}

@@ -260,7 +260,7 @@ export function MinutajeTab({
               {jornada.participaciones.map((p, idx) => (
                 <tr key={p.miembro_equipo_id}>
                   <td>{idx + 1}</td>
-                  <td>
+                  <td className={styles.nombreCell}>
                     <button onClick={() => setExpandedId(expandedId === p.miembro_equipo_id ? null : p.miembro_equipo_id)}>
                       {p.persona.nombre}
                     </button>
@@ -308,7 +308,7 @@ export function MinutajeTab({
                       </button>
                     ))}
                   </td>
-                  <td>
+                  <td className={styles.minutosCell}>
                     <label>
                       {t('minutos', lang)}
                       <input
