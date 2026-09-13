@@ -90,13 +90,16 @@ jobs:
 
       - name: Start MinIO
         # GitHub Actions service containers can't override a command, and the
-        # minio/minio image needs `server /data` passed explicitly — so MinIO
-        # runs as a plain `docker run` step instead of a `services:` entry.
+        # minio image needs `server /data` passed explicitly — so MinIO runs
+        # as a plain `docker run` step instead of a `services:` entry. Pulled
+        # from quay.io, not Docker Hub: minio/minio on Docker Hub no longer
+        # accepts anonymous pulls (MinIO publishes there under a different
+        # policy now), while quay.io/minio/minio is still public.
         run: |
           docker run -d --name minio -p 9000:9000 \
             -e MINIO_ROOT_USER=uke_minio \
             -e MINIO_ROOT_PASSWORD=uke_minio_secret \
-            minio/minio server /data
+            quay.io/minio/minio server /data
           for i in $(seq 1 30); do
             curl -sf http://localhost:9000/minio/health/live && break
             sleep 1
