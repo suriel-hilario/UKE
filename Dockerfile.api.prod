@@ -32,6 +32,11 @@ COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/apps/api/src/generated ./apps/api/src/generated
 COPY --from=build /app/apps/api/prisma ./apps/api/prisma
 COPY --from=build /app/apps/api/prisma.config.ts ./apps/api/prisma.config.ts
+# ts-node needs this to resolve the seed script as CommonJS — without it,
+# ts-node finds no tsconfig.json at all in this image and falls back to a
+# module setting that breaks seed.ts's extension-less relative import of
+# the generated Prisma client (ERR_MODULE_NOT_FOUND under Node's ESM resolver).
+COPY --from=build /app/apps/api/tsconfig.json ./apps/api/tsconfig.json
 COPY --from=build /app/apps/api/package.json ./apps/api/package.json
 COPY --from=build /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=build /app/package.json ./package.json
