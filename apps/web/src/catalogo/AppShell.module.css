@@ -20,9 +20,19 @@
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-lg);
   margin-right: auto;
+}
+
+.brandLogo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .langSelect {
@@ -54,7 +64,8 @@
   padding: 0 var(--space-3);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
-  background: var(--color-surface-card);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-primary);
 }
 
 .body {

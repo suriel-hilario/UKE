@@ -7,6 +7,7 @@ import { EquipoCard, EquipoResumen } from './EquipoCard'
 import { t as tPanel } from '../panel/i18n'
 import styles from './AppShell.module.css'
 import { EmptyState } from '../styles/EmptyState'
+import ukeLogo from '../assets/uke-logo.png'
 
 interface Me {
   id: string
@@ -69,7 +70,10 @@ export function AppShell() {
   return (
     <div className={styles.shell}>
       <header className={styles.topbar}>
-        <strong className={styles.brand}>UKE</strong>
+        <span className={styles.brand}>
+          <img className={styles.brandLogo} src={ukeLogo} alt="UKE" />
+          UKE
+        </span>
         <select
           className={styles.langSelect}
           value={lang}

@@ -1,20 +1,20 @@
 :root {
-  /* Brand */
+  /* Brand — UKE-Docs/UKE_F7_Entrenatzaileak.html, UKE_F7_Asistentziak.html, UKE_Eskola_Asistentziak.html */
   --color-brand: #1a5228;
-  --color-brand-dark: #0c2613;
+  --color-brand-dark: #0a1e0e;
   --color-brand-contrast: #ffffff;
 
   /* Semantic */
   --color-success: #1e8449;
-  --color-success-bg: #d4edda;
-  --color-warning: #b9770e;
-  --color-warning-bg: #fdf3d9;
-  --color-danger: #c0392b;
-  --color-danger-bg: #fbdedb;
-  --color-neutral: #7a8a80;
-  --color-neutral-bg: #eef1ef;
-  --color-info: #1a5276;
-  --color-info-bg: #e3f2fd;
+  --color-success-bg: rgba(39, 174, 96, 0.18);
+  --color-warning: #f39c12;
+  --color-warning-bg: rgba(243, 156, 18, 0.2);
+  --color-danger: #e74c3c;
+  --color-danger-bg: rgba(231, 76, 60, 0.18);
+  --color-neutral: #4a9960;
+  --color-neutral-bg: rgba(74, 153, 96, 0.12);
+  --color-info: #3498db;
+  --color-info-bg: rgba(52, 152, 219, 0.2);
 
   /* Team colors */
   --color-team-verde: #2ecc71;
@@ -24,7 +24,7 @@
   /* Semaforo */
   --color-semaforo-verde: #27ae60;
   --color-semaforo-rojo: #e74c3c;
-  --color-semaforo-sin-datos: #b0b8b3;
+  --color-semaforo-sin-datos: #4a5a52;
 
   /* Minutaje participation pills (8 distinct hues) */
   --color-pill-conv: #1a5276;
@@ -49,23 +49,24 @@
   --color-estado-f11-nj: #6b7280;
 
   /* Surface */
-  --color-bg: #f7f8f7;
-  --color-surface-card: #ffffff;
-  --color-surface-sidebar: #ffffff;
+  --color-bg: #071a0c;
+  --color-surface-card: #0c2613;
+  --color-surface-sunken: #061209;
+  --color-surface-sidebar: var(--color-bg);
   --color-surface-topbar: var(--color-brand-dark);
 
   /* Text */
-  --color-text-primary: #1a2a1a;
-  --color-text-secondary: #5b6b60;
-  --color-text-disabled: #9aa39c;
+  --color-text-primary: #d4edda;
+  --color-text-secondary: #4a9960;
+  --color-text-disabled: #336640;
 
   /* Border / focus / overlay */
-  --color-border: #dde3df;
+  --color-border: #1a5228;
   --color-focus-ring: #3498db;
-  --color-overlay-backdrop: rgba(10, 20, 12, 0.55);
+  --color-overlay-backdrop: rgba(0, 0, 0, 0.6);
 
   /* Typography */
-  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family: Arial, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
