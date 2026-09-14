@@ -149,3 +149,58 @@ jobs:
 
       - name: Build
         run: pnpm --filter @workspace/web build
+
+  e2e-tests:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    needs: test-api
+    # Advisory while the suite stabilizes (see openspec/changes/add-e2e-tests/design.md D6).
+    # Remove once 5 consecutive runs on master are green, so failures start blocking merges.
+    continue-on-error: true
+    env:
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+      E2E_ADMIN_AUTH0_ID: ${{ secrets.E2E_ADMIN_AUTH0_ID }}
+      E2E_DIRECTOR_EMAIL: ${{ secrets.E2E_DIRECTOR_EMAIL }}
+      E2E_DIRECTOR_PASSWORD: ${{ secrets.E2E_DIRECTOR_PASSWORD }}
+      E2E_DIRECTOR_AUTH0_ID: ${{ secrets.E2E_DIRECTOR_AUTH0_ID }}
+      E2E_COORDINADOR_EMAIL: ${{ secrets.E2E_COORDINADOR_EMAIL }}
+      E2E_COORDINADOR_PASSWORD: ${{ secrets.E2E_COORDINADOR_PASSWORD }}
+      E2E_COORDINADOR_AUTH0_ID: ${{ secrets.E2E_COORDINADOR_AUTH0_ID }}
+      E2E_ENTRENADOR_EMAIL: ${{ secrets.E2E_ENTRENADOR_EMAIL }}
+      E2E_ENTRENADOR_PASSWORD: ${{ secrets.E2E_ENTRENADOR_PASSWORD }}
+      E2E_ENTRENADOR_AUTH0_ID: ${{ secrets.E2E_ENTRENADOR_AUTH0_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Write .env.test for the docker-compose.prod.yml stack
+        run: echo "${{ secrets.E2E_ENV_PROD }}" | base64 -d > .env.test
+
+      - name: Run e2e suite
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+          retention-days: 7

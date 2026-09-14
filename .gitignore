@@ -5,6 +5,7 @@ dist/
 .env.*
 !.env.example
 !.env.prod.example
+!.env.test.example
 playwright-report/
 test-results/
 .DS_Store
