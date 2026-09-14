@@ -70,4 +70,37 @@ describe('UsersPage', () => {
       equipo_ids: [],
     })
   })
+
+  it('reset password button calls POST /admin/users/:id/reset-password and shows confirmation', async () => {
+    fetchMock.mockImplementation((url: string) => {
+      if (url.endsWith('/admin/users')) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: async () => [
+            { id: 'u1', nombre_visible: 'Ana', email: 'ana@club.com', rol: 'entrenador', categoria_asignada: null, equipo_ids: [] },
+          ],
+        })
+      }
+      if (url.endsWith('/admin/users/u1/reset-password')) {
+        return Promise.resolve({ ok: true, status: 200, json: async () => ({ ok: true }) })
+      }
+      return Promise.resolve({ ok: true, status: 200, json: async () => [] })
+    })
+
+    render(<UsersPage />)
+
+    await waitFor(() => expect(screen.getByText('Ana')).toBeTruthy())
+
+    fireEvent.click(screen.getByRole('button', { name: /Pasahitza berrezarri|Restablecer contraseña/ }))
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/users/u1/reset-password'),
+        expect.objectContaining({ method: 'POST' }),
+      ),
+    )
+
+    await waitFor(() => expect(screen.getByRole('status')).toBeTruthy())
+  })
 })

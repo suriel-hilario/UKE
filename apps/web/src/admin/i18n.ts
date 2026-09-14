@@ -15,6 +15,7 @@ const DICT = {
   cancelar: { eu: 'Utzi', es: 'Cancelar' },
   deshabilitar: { eu: 'Desgaitu', es: 'Deshabilitar' },
   resetPassword: { eu: 'Pasahitza berrezarri', es: 'Restablecer contraseña' },
+  resetPasswordOk: { eu: 'Berrezarpen emaila bidali da', es: 'Email de restablecimiento enviado' },
   nombre: { eu: 'Izena', es: 'Nombre' },
   email: { eu: 'Emaila', es: 'Email' },
   rol: { eu: 'Rola', es: 'Rol' },

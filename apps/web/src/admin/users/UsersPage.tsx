@@ -19,6 +19,7 @@ export function UsersPage() {
   const lang = useLang()
   const [users, setUsers] = useState<Usuario[]>([])
   const [modalUser, setModalUser] = useState<Usuario | 'new' | null>(null)
+  const [resetOk, setResetOk] = useState(false)
 
   async function refresh() {
     setUsers(await api.get('/admin/users'))
@@ -40,7 +41,9 @@ export function UsersPage() {
   }
 
   async function handleResetPassword(user: Usuario) {
+    setResetOk(false)
     await api.post(`/admin/users/${user.id}/reset-password`)
+    setResetOk(true)
   }
 
   async function handleDisable(user: Usuario) {
@@ -52,6 +55,11 @@ export function UsersPage() {
   return (
     <div>
       <h2>{t('usuarios', lang)}</h2>
+      {resetOk && (
+        <div role="status" className={styles.successBanner}>
+          {t('resetPasswordOk', lang)}
+        </div>
+      )}
       <button onClick={() => setModalUser('new')}>{t('crear', lang)}</button>
       <div className={styles.tableWrap}>
         <table>
