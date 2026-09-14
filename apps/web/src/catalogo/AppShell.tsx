@@ -149,6 +149,9 @@ export function AppShell() {
               {tPanel('panel', lang)}
             </Link>
           )}
+          <button className={styles.drawerLogoutButton} onClick={() => logout()}>
+            {t('salir', lang)}
+          </button>
         </nav>
 
         <main className={styles.main}>

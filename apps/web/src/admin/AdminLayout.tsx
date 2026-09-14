@@ -12,7 +12,7 @@ interface Me {
 }
 
 export function AdminLayout() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const api = useAdminApi()
   const esAdmin = user?.rol === 'admin'
   const [lang, setLang] = useState<Lang>('eu')
@@ -42,6 +42,12 @@ export function AdminLayout() {
             ☰
           </button>
           <img className={styles.topbarLogo} src={ukeLogo} alt="UKE" />
+          <div className={styles.topbarActions}>
+            {user && <span className={styles.userBadge}>{user.email}</span>}
+            <button className={styles.logoutButton} onClick={() => logout()}>
+              {t('salir', lang)}
+            </button>
+          </div>
         </header>
 
         {menuOpen && <div className={styles.overlay} onClick={closeMenu} />}
@@ -93,6 +99,12 @@ export function AdminLayout() {
           >
             {t('historico', lang)}
           </NavLink>
+          <div className={styles.navFooter}>
+            {user && <span className={styles.userBadge}>{user.email}</span>}
+            <button className={styles.drawerLogoutButton} onClick={() => logout()}>
+              {t('salir', lang)}
+            </button>
+          </div>
         </nav>
         <div className={styles.content}>
           <Outlet />

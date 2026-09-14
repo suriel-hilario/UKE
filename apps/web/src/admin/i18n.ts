@@ -33,6 +33,7 @@ const DICT = {
   grupo: { eu: 'Taldea', es: 'Grupo' },
   orden: { eu: 'Ordena', es: 'Orden' },
   sinPermiso: { eu: 'Baimenik ez', es: 'Sin permiso' },
+  salir: { eu: 'Irten', es: 'Salir' },
   bloques: { eu: 'Blokeak', es: 'Bloques' },
   festivos: { eu: 'Jaiegunak', es: 'Festivos' },
   descripcion: { eu: 'Deskribapena', es: 'Descripción' },
